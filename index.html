@@ -115,6 +115,97 @@ footer { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 600px) { h1 { font-size: 1.65rem; } .card { padding: 20px; } }
 </style>
+    document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+});
+
+function filterCards(q) {
+    q = q.toLowerCase();
+    document.querySelectorAll('.tab-content.active .card').forEach(c => {
+        c.style.display = c.innerText.toLowerCase().includes(q) ? 'block' : 'none';
+    });
+}
+
+function toggleTerm() {
+    const b = document.getElementById('term-box');
+    b.classList.toggle('open');
+    playFx('term');
+    if (b.classList.contains('open')) document.getElementById('term-in').focus();
+}
+
+function runCmd(e) {
+    if (e.key !== 'Enter') return;
+    const inp = document.getElementById('term-in'), out = document.getElementById('term-out');
+    const cmd = inp.value.trim().toLowerCase();
+    inp.value = '';
+    if (!cmd) return;
+    playFx('enter');
+    let res = '';
+    if (cmd === 'help') res = 'Команды: <b>ver</b> (ядро Win), <b>uname</b> (ядро Linux), <b>status</b> (аудит), <b>clear</b> (очистить)';
+    else if (cmd === 'ver') res = 'Microsoft Windows [Version 10.0.22631] — Ядро NT 10.0 идентично для Win 10 и Win 11.';
+    else if (cmd === 'uname') res = 'Linux kernel 6.11.0-generic x86_64 GNU/Linux (ядро ≠ дистрибутив).';
+    else if (cmd === 'status') res = 'GOST R 51275-2006: OK | NIST Botnet: OK | MITRE CVE: 4 карточки верифицированы.';
+    else if (cmd === 'clear') { out.innerHTML = ''; return; }
+    else { res = `Команда "${cmd}" не найдена. Введите <b>help</b>.`; playFx('err'); }
+    out.innerHTML += `<div style="color:#94a3b8">&gt; ${cmd}</div><div>${res}</div>`;
+    out.scrollTop = out.scrollHeight;
+}
+
+let soundOn = false, audioCtx = null;
+function toggleSound() {
+    soundOn = !soundOn;
+    document.getElementById('snd-btn').textContent = soundOn ? '🔊 Звук' : '🔇 Звук';
+    if (soundOn && !audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (soundOn) playFx('on');
+}
+
+function playFx(type) {
+    if (!soundOn || !audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    if (type === 'on') {
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(320, now); osc.frequency.exponentialRampToValueAtTime(680, now + 0.14);
+        gain.gain.setValueAtTime(0.08, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.start(now); osc.stop(now + 0.15);
+    } else if (type === 'tab') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(480, now); osc.frequency.exponentialRampToValueAtTime(760, now + 0.08);
+        gain.gain.setValueAtTime(0.06, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.start(now); osc.stop(now + 0.09);
+    } else if (type === 'copy') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(880, now); osc.frequency.setValueAtTime(1180, now + 0.06);
+        gain.gain.setValueAtTime(0.06, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        osc.start(now); osc.stop(now + 0.14);
+    } else if (type === 'term' || type === 'enter') {
+        osc.type = 'square'; osc.frequency.setValueAtTime(type === 'term' ? 240 : 520, now);
+        gain.gain.setValueAtTime(0.04, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+        osc.start(now); osc.stop(now + 0.07);
+    } else if (type === 'err') {
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(160, now); osc.frequency.linearRampToValueAtTime(110, now + 0.16);
+        gain.gain.setValueAtTime(0.06, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+        osc.start(now); osc.stop(now + 0.17);
+    } else {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.04, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.start(now); osc.stop(now + 0.05);
+    }
+}
+
+document.addEventListener('click', e => {
+    if (e.target.closest('.tab-btn')) playFx('tab');
+    else if (e.target.closest('.copy-btn')) playFx('copy');
+    else if (e.target.closest('button, select, a') && !e.target.closest('#snd-btn')) playFx('click');
+});
+document.getElementById('term-in')?.addEventListener('keydown', e => {
+    if (e.key.length === 1) playFx('click');
+});
+
 </head>
 <body>
 
