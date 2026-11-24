@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT-Портал ДЗ & Технический Аудит</title>
+    <style>
+        :root {
+            --bg-dark: #06090f;
+            --glass-bg: rgba(16, 22, 34, 0.75);
+            --glass-border: rgba(88, 166, 255, 0.25);
+            --accent-blue: #38bdf8;
+            --accent-purple: #818cf8;
+            --danger: #fb7185;
+            --success: #34d399;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.65;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 0%, #0f172a 0%, #06090f 80%);
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(56, 189, 248, 0.05);
+            animation: fadeInDown 0.8s ease-out;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            color: var(--success);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-family: monospace;
+            margin-bottom: 18px;
+        }
+        .pulse-dot {
+            width: 8px; height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 1.5s infinite;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 70%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            min-height: 2.8rem;
+        }
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: var(--accent-blue);
+            animation: blink 0.8s infinite;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto 24px auto;
+            font-size: 1.05rem;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: var(--text-muted);
+            padding: 10px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-btn:hover { color: #fff; border-color: var(--accent-blue); transform: translateY(-2px); }
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.2));
+            border-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .card.visible { opacity: 1; transform: translateY(0); }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.6);
+            box-shadow: 0 15px 40px rgba(56, 189, 248, 0.15);
+        }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .card-title-group { display: flex; align-items: center; gap: 14px; }
+        .num-badge {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #06090f;
+            font-weight: 800;
+            font-family: monospace;
+            font-size: 1rem;
+            padding: 6px 12px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+        h2 { font-size: 1.35rem; color: #fff; }
+        .copy-btn {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--accent-blue);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .copy-btn:hover { background: var(--accent-blue); color: #06090f; font-weight: 600; }
+        .box-myth {
+            background: rgba(251, 113, 133, 0.08);
+            border-left: 4px solid var(--danger);
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 16px;
+        }
+        .box-myth strong { color: var(--danger); }
+        .box-fact {
+            background: rgba(52, 211, 153, 0.08);
+            border-left: 4px solid var(--success);
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 18px;
+        }
+        .box-fact strong { color: var(--success); }
+        p { margin-bottom: 14px; color: #cbd5e1; }
+        code {
+            font-family: monospace;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            padding: 2px 7px;
+            border-radius: 5px;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+        .links-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        .proof-link {
+            text-decoration: none;
+            background: rgba(15, 23, 42, 0.8);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .proof-link:hover {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.15);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.2);
+        }
+        #toast {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #06090f;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+        }
+        #toast.show { transform: translateY(0); opacity: 1; }
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 50px;
+            padding: 20px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 600px) { h1 { font-size: 1.65rem; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="container">
+    <header>
+        <div class="status-pill">
+            <span class="pulse-dot"></span>
+            <span>SYSTEM ONLINE // HOMEWORK &amp; AUDIT PORTAL</span>
+        </div>
+        <h1><span id="typewriter"></span><span class="cursor">&nbsp;</span></h1>
+        <p class="subtitle">Персональный веб-портал для сдачи домашних заданий и верификации технической терминологии по стандартам ГОСТ, NIST, Microsoft Learn и MITRE CVE.</p>
+        
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('audit', this)">🛡️ Текущее ДЗ: Аудит ПО и ИБ</button>
+            <button class="tab-btn" onclick="switchTab('future', this)">📂 Архив / Будущие ДЗ (Шаблон)</button>
+        </div>
+    </header>
+
+    <div id="audit" class="tab-content active">
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">01</span>
+                    <h2>Миф о «вирусах-зомби» в классификации</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('По ГОСТ Р 51275-2006 и стандартам NIST понятия «вирус-зомби» не существует. Зомби — это статус зараженного ПК в ботнете, а программа называется Бот или Троян (Backdoor).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Ошибка в задании:</strong> Утверждение, что «вирусы-зомби» — это отдельный вид компьютерных вирусов.
+            </div>
+            <div class="box-fact">
+                <strong>Научный факт:</strong> В стандартах кибербезопасности термина «вирус-зомби» нет. <strong>Зомби (Zombie)</strong> — это статус компьютера в составе <strong>ботнета</strong>. Вредоносная программа классифицируется как <strong>Бот</strong> или <strong>Троян удалённого доступа (Backdoor)</strong>, так как она не внедряется в другие файлы.
+            </div>
+            <p>Смешивание всех видов Malware под словом «вирус» — бытовой штамп из 1990-х годов, противоречащий государственным стандартам РФ (ГОСТ) и международной базе NIST.</p>
+            <div class="links-row">
+                <a href="https://encyclopedia.kaspersky.ru/glossary/botnet/" target="_blank" class="proof-link">📄 Энциклопедия Касперского (Ботнет и Зомби)</a>
+                <a href="https://csrc.nist.gov/glossary/term/zombie" target="_blank" class="proof-link">🏛️ Стандарты NIST (США): Zombie</a>
+                <a href="https://docs.cntd.ru/document/1200050966" target="_blank" class="proof-link">🇷🇺 ГОСТ Р 51275-2006</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">02</span>
+                    <h2>Ядро Linux против версий Windows (10 / 11)</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Linux — это ядро (kernel.org), у него нет единых пользовательских версий, есть дистрибутивы GNU/Linux. А у Windows 10 и 11 технически одно ядро NT 10.0 (документация Microsoft Learn).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Ошибочный аргумент:</strong> Linux — это программа/ОС с едиными версиями (по аналогии с Windows 1.0, 8.1, 10, 11).
+            </div>
+            <div class="box-fact">
+                <strong>Архитектурный факт:</strong> <strong>Linux</strong> — это исключительно <strong>ядро (Kernel)</strong>. Полноценные системы на его базе называются <strong>дистрибутивами GNU/Linux</strong> (Ubuntu, Debian, Astra Linux), у каждого из которых своя независимая нумерация.
+            </div>
+            <p>Ранние версии Windows (1.0 – 3.1) были графическими оболочками поверх <strong>MS-DOS</strong>. Современная линейка работает на ядре <strong>Windows NT</strong>. Согласно официальной таблице <strong>Microsoft Learn</strong>, Windows 10 и Windows 11 имеют <strong>одинаковый технический номер версии ядра — <code>10.0</code></strong>. Цифры 10 и 11 — чистый маркетинг (проверяется командой <code>ver</code> в консоли).</p>
+            <div class="links-row">
+                <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/operating-system-version" target="_blank" class="proof-link">🪟 Microsoft Learn: Win 10 = Win 11 (Kernel 10.0)</a>
+                <a href="https://www.kernel.org/" target="_blank" class="proof-link">🐧 Kernel.org: Архив ядра Linux</a>
+                <a href="https://www.gnu.org/gnu/linux-and-gnu.html" target="_blank" class="proof-link">⚙️ GNU: Ядро Linux vs ОС GNU/Linux</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">03</span>
+                    <h2>Сторонние антивирусы: нагрузка и уязвимости</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Исследователи Google Project Zero доказали, что сторонние антивирусы сами содержат критические уязвимости в режиме ядра (Ring 0) и ломают защиту браузеров.')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Устаревшее правило:</strong> Обязательная установка стороннего антивируса (Kaspersky, ESET NOD32) для защиты ПК.
+            </div>
+            <div class="box-fact">
+                <strong>Позиция исследователей ИБ:</strong> Сторонние антивирусы не только перегружают ЦП и ОЗУ, но и <strong>сами открывают дыры для взлома</strong>, работая с высшими привилегиями ядра (Ring 0) и вмешиваясь в шифрование HTTPS.
+            </div>
+            <p>Элитная команда <strong>Google Project Zero</strong> опубликовала десятки отчётов о критических уязвимостях в антивирусах (включая Kaspersky и ESET). Инженеры Mozilla также официально призывали удалять сторонний защитный софт, так как он отключает встроенные песочницы браузеров. Главная защита — цифровая гигиена.</p>
+            <div class="links-row">
+                <a href="https://googleprojectzero.blogspot.com/" target="_blank" class="proof-link">🛡️ Google Project Zero: Уязвимости антивирусов</a>
+                <a href="https://robert.ocallahan.org/2017/01/disable-your-antivirus-software-except.html" target="_blank" class="proof-link">🦊 Экс-инженер Mozilla: Вред антивирусного ПО</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">04</span>
+                    <h2>Яндекс.Браузер: Bloatware, уязвимости CVE и слежка</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Яндекс.Браузер — перегруженное ПО (Bloatware) с закрытым кодом, регулярными уязвимостями в базе CVE и обязательной передачей метаданных по реестру ОРИ (ФЗ-374).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Тезис из учебника:</strong> Яндекс.Браузер — простая и безопасная программа для просмотра веб-страниц.
+            </div>
+            <div class="box-fact">
+                <strong>Технический и юридический факт:</strong> Проприетарное ПО категории <strong>Bloatware</strong> с закрытым исходным кодом, высоким потреблением ОЗУ, встроенными трекерами и регулярными уязвимостями для третьих лиц. Эталон приватности — Open Source (<code>Ungoogled Chromium</code>, <code>LibreWolf</code>).
+            </div>
+            <p>В международной базе <strong>MITRE CVE</strong> и бюллетенях самого Яндекса регулярно фиксируются уязвимости браузера, позволяющие злоумышленникам красть сессионные куки и данные. Кроме того, компания состоит в <strong>Реестре ОРИ Роскомнадзора</strong> (ФЗ-374), что обязывает её хранить и передавать метаданные пользователей.</p>
+            <div class="links-row">
+                <a href="https://yandex.ru/security/advisories" target="_blank" class="proof-link">🐞 Бюллетени уязвимостей Яндекса</a>
+                <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Yandex+Browser" target="_blank" class="proof-link">🔓 База уязвимостей CVE: Yandex Browser</a>
+                <a href="https://97-fz.rkn.gov.ru/" target="_blank" class="proof-link">⚖️ Реестр ОРИ Роскомнадзора</a>
+                <a href="https://github.com/ungoogled-software/ungoogled-chromium" target="_blank" class="proof-link">💻 Open Source эталон: Ungoogled Chromium</a>
+            </div>
+        </article>
+    </div>
+
+    <div id="future" class="tab-content">
+        <article class="card visible">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">HW</span>
+                    <h2>Раздел для дистанционной сдачи домашних заданий</h2>
+                </div>
+            </div>
+            <div class="box-fact">
+                <strong>Статус раздела:</strong> Готов к публикации новых работ.
+            </div>
+            <p>Этот портал используется для удалённой демонстрации выполненных практических работ, презентаций, кода и рефератов по информатике в случае отсутствия на уроке.</p>
+            <p><strong>Как добавить новое ДЗ за 30 секунд:</strong> достаточно скопировать блок <code>&lt;article class="card"&gt;...&lt;/article&gt;</code> в коде страницы, вписать тему урока и прикрепить ссылки на выполненные файлы или Google Документы.</p>
+        </article>
+    </div>
+
+    <footer>
+        Веб-портал разработан на чистом HTML5 / CSS3 / Vanilla JS без сторонних фреймворков и трекеров.
+    </footer>
+</div>
+
+<div id="toast">✅ Тезис скопирован в буфер обмена!</div>
+
+<script>
+    const titleText = "Технический аудит ПО и кибербезопасности";
+    const typewriterEl = document.getElementById("typewriter");
+    let charIndex = 0;
+
+    function typeEffect() {
+        if (charIndex < titleText.length) {
+            typewriterEl.textContent += titleText.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeEffect, 45);
+        }
+    }
+    window.addEventListener("load", typeEffect);
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+        revealCards();
+    }
+
+    function revealCards() {
+        const cards = document.querySelectorAll('.tab-content.active .card');
+        cards.forEach((card, index) => {
+            setTimeout(() => { card.classList.add('visible'); }, index * 150);
+        });
+    }
+    window.addEventListener("load", revealCards);
+
+    function copyText(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById("toast");
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 2500);
+        });
+    }
+
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, particles;
+
+    function initCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        particles = [];
+        const count = Math.min(Math.floor(width / 18), 75);
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.6,
+                vy: (Math.random() - 0.5) * 0.6,
+                radius: Math.random() * 2 + 1
+            });
+        }
+    }
+
+    function drawCanvas() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = '#38bdf8';
+        for (let i = 0; i < particles.length; i++) {
+            let p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0 || p.x > width) p.vx *= -1;
+            if (p.y < 0 || p.y > height) p.vy *= -1;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+            for (let j = i + 1; j < particles.length; j++) {
+                let p2 = particles[j];
+                let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                if (dist < 130) {
+                    ctx.strokeStyle = `rgba(56, 189, 248, ${0.22 * (1 - dist / 130)})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(drawCanvas);
+    }
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    drawCanvas();
+</script>
+
+</body>
+</html>
