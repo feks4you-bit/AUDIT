@@ -5,136 +5,440 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IT-Портал ДЗ & Технический Аудит</title>
 <style>
-:root{--bg:#06090f;--glass:rgba(16,22,34,.78);--border:rgba(56,189,248,.28);--accent:#38bdf8;--sec:#818cf8;--danger:#fb7185;--success:#34d399;--text:#f1f5f9;--muted:#94a3b8}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden;min-height:100vh}
-#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:radial-gradient(circle at 50% 0%,#0f172a 0%,#06090f 85%)}
-.container{max-width:960px;margin:0 auto;padding:35px 20px;position:relative;z-index:1}
-header{text-align:center;margin-bottom:36px;padding:36px 20px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.55)}
-.top-controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-.status-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:var(--success);padding:6px 14px;border-radius:50px;font-size:.82rem;font-family:monospace}
-.pulse-dot{width:8px;height:8px;background:var(--success);border-radius:50%;box-shadow:0 0 10px var(--success);animation:pulse 1.5s infinite}
-.select-pill{background:rgba(15,23,42,.9);border:1px solid var(--accent);color:var(--text);padding:6px 14px;border-radius:50px;font-size:.85rem;font-weight:600;outline:none;cursor:pointer}
-.select-pill option{background:#0f172a;color:#f1f5f9}
-h1{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#fff 25%,var(--accent) 70%,var(--sec) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;min-height:2.8rem}
-.cursor{display:inline-block;width:3px;background:var(--accent);animation:blink .8s infinite}
-.subtitle{color:var(--muted);max-width:680px;margin:0 auto 24px;font-size:1.02rem}
-.nav-tabs{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-.tab-btn{background:rgba(30,41,59,.6);border:1px solid rgba(148,163,184,.2);color:var(--muted);padding:10px 22px;border-radius:12px;cursor:pointer;font-size:.95rem;font-weight:600;transition:.25s}
-.tab-btn:hover{color:#fff;border-color:var(--accent);transform:translateY(-2px)}
-.tab-btn.active{background:rgba(56,189,248,.15);border-color:var(--accent);color:#fff;box-shadow:0 0 20px var(--border)}
-.tab-content{display:none}.tab-content.active{display:block;animation:fadeIn .4s ease}
-.card{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:18px;padding:28px;margin-bottom:26px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.25s}
-.card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 15px 35px var(--border)}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:18px;flex-wrap:wrap}
-.card-title-group{display:flex;align-items:center;gap:14px}
-.num-badge{background:linear-gradient(135deg,var(--accent),var(--sec));color:#06090f;font-weight:800;font-family:monospace;font-size:1rem;padding:6px 12px;border-radius:10px}
-h2{font-size:1.32rem;color:#fff}
-.copy-btn{background:rgba(15,23,42,.7);border:1px solid var(--accent);color:var(--accent);padding:6px 12px;border-radius:8px;font-size:.85rem;cursor:pointer;transition:.2s}
-.copy-btn:hover{background:var(--accent);color:#06090f;font-weight:600}
-.box-myth{background:rgba(251,113,133,.09);border-left:4px solid var(--danger);padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:16px}.box-myth strong{color:var(--danger)}
-.box-fact{background:rgba(52,211,153,.09);border-left:4px solid var(--success);padding:14px 18px;border-radius:0 10px 10px 0;margin-bottom:18px}.box-fact strong{color:var(--success)}
-p{margin-bottom:14px;color:#cbd5e1}
-code{font-family:monospace;background:rgba(255,255,255,.08);color:var(--accent);padding:2px 7px;border-radius:5px}
-.links-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(148,163,184,.15)}
-.proof-link{text-decoration:none;background:rgba(15,23,42,.85);color:#e2e8f0;border:1px solid rgba(148,163,184,.25);padding:8px 14px;border-radius:10px;font-size:.88rem;transition:.25s}
-.proof-link:hover{border-color:var(--accent);color:#fff;transform:translateY(-2px)}
-#toast{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,var(--accent),var(--sec));color:#06090f;font-weight:700;padding:12px 24px;border-radius:12px;transform:translateY(100px);opacity:0;transition:.3s;z-index:999}#toast.show{transform:translateY(0);opacity:1}
-footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:50px;padding:20px;border-top:1px solid rgba(148,163,184,.15)}
-@keyframes pulse{0%{transform:scale(.95);box-shadow:0 0 0 0 rgba(52,211,153,.7)}70%{transform:scale(1);box-shadow:0 0 0 8px rgba(52,211,153,0)}100%{transform:scale(.95);box-shadow:0 0 0 0 rgba(52,211,153,0)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@media(max-width:600px){h1{font-size:1.65rem}.card{padding:20px}}
+:root {
+    --bg: #06090f;
+    --glass: rgba(16, 22, 34, 0.78);
+    --border: rgba(56, 189, 248, 0.3);
+    --accent: #38bdf8;
+    --sec: #818cf8;
+    --danger: #fb7185;
+    --success: #34d399;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+#bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at 50% 0%, #0f172a 0%, #06090f 85%);
+}
+.container { max-width: 960px; margin: 0 auto; padding: 35px 20px; position: relative; z-index: 1; }
+header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding: 36px 20px;
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+}
+.top-controls { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    color: var(--success);
+    padding: 6px 14px; border-radius: 50px;
+    font-size: 0.82rem; font-family: monospace;
+}
+.pulse-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
+.select-pill {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid var(--accent);
+    color: var(--text);
+    padding: 6px 14px; border-radius: 50px;
+    font-size: 0.85rem; font-weight: 600;
+    outline: none; cursor: pointer;
+}
+.select-pill option { background: #0f172a; color: #f1f5f9; }
+h1 {
+    font-size: 2.2rem; font-weight: 800;
+    background: linear-gradient(135deg, #fff 25%, var(--accent) 70%, var(--sec) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 12px; min-height: 2.8rem;
+}
+.cursor { display: inline-block; width: 3px; background: var(--accent); animation: blink 0.8s infinite; }
+.subtitle { color: var(--muted); max-width: 680px; margin: 0 auto 24px; font-size: 1.02rem; }
+.nav-tabs { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.tab-btn {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    color: var(--muted);
+    padding: 10px 22px; border-radius: 12px;
+    cursor: pointer; font-size: 0.95rem; font-weight: 600;
+    transition: 0.25s;
+}
+.tab-btn:hover { color: #fff; border-color: var(--accent); transform: translateY(-2px); }
+.tab-btn.active { background: rgba(56, 189, 248, 0.15); border-color: var(--accent); color: #fff; box-shadow: 0 0 20px var(--border); }
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+.card {
+    background: var(--glass);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: 18px; padding: 28px; margin-bottom: 26px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transition: 0.25s;
+}
+.card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 15px 35px var(--border); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 18px; flex-wrap: wrap; }
+.card-title-group { display: flex; align-items: center; gap: 14px; }
+.num-badge { background: linear-gradient(135deg, var(--accent), var(--sec)); color: #06090f; font-weight: 800; font-family: monospace; font-size: 1rem; padding: 6px 12px; border-radius: 10px; }
+h2 { font-size: 1.32rem; color: #fff; }
+.copy-btn { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--accent); color: var(--accent); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+.copy-btn:hover { background: var(--accent); color: #06090f; font-weight: 600; }
+.box-myth { background: rgba(251, 113, 133, 0.09); border-left: 4px solid var(--danger); padding: 14px 18px; border-radius: 0 10px 10px 0; margin-bottom: 16px; }
+.box-myth strong { color: var(--danger); }
+.box-fact { background: rgba(52, 211, 153, 0.09); border-left: 4px solid var(--success); padding: 14px 18px; border-radius: 0 10px 10px 0; margin-bottom: 18px; }
+.box-fact strong { color: var(--success); }
+p { margin-bottom: 14px; color: #cbd5e1; }
+code { font-family: monospace; background: rgba(255,255,255,0.08); color: var(--accent); padding: 2px 7px; border-radius: 5px; }
+.links-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(148, 163, 184, 0.15); }
+.proof-link { text-decoration: none; background: rgba(15, 23, 42, 0.85); color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.25); padding: 8px 14px; border-radius: 10px; font-size: 0.88rem; transition: 0.25s; }
+.proof-link:hover { border-color: var(--accent); color: #fff; transform: translateY(-2px); }
+#toast { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, var(--accent), var(--sec)); color: #06090f; font-weight: 700; padding: 12px 24px; border-radius: 12px; transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 999; }
+#toast.show { transform: translateY(0); opacity: 1; }
+footer { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 50px; padding: 20px; border-top: 1px solid rgba(148, 163, 184, 0.15); }
+@keyframes pulse { 0% { transform: scale(0.95); } 70% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 600px) { h1 { font-size: 1.65rem; } .card { padding: 20px; } }
 </style>
 </head>
 <body>
+
 <canvas id="bg-canvas"></canvas>
+
 <div class="container">
-<header>
-<div class="top-controls">
-<div class="status-pill"><span class="pulse-dot"></span><span>SYSTEM ONLINE // AUDIT PORTAL</span></div>
-<select id="color-select" class="select-pill" onchange="changeColorPreset(this.value)">
-<option value="blue">🔵 Цвет 1: Кибер-синий</option><option value="emerald">🟢 Цвет 2: Изумруд</option><option value="pink">🩷 Цвет 3: Киберпанк</option><option value="amber">🟠 Цвет 4: Янтарь</option><option value="purple">🟣 Цвет 5: Ультрафиолет</option><option value="red">🔴 Цвет 6: Алый</option><option value="cyan">🩵 Цвет 7: Ледяной неон</option><option value="lime">🍏 Цвет 8: Лайм</option><option value="coral">🌅 Цвет 9: Коралл</option><option value="ocean">🌊 Цвет 10: Океан</option><option value="fuchsia">🔮 Цвет 11: Фуксия</option><option value="steel">⚪ Цвет 12: Графит</option>
-</select>
-<select id="bg-select" class="select-pill" onchange="changeBgMode(this.value)">
-<option value="mesh">✨ Фон 1: Нейросеть</option><option value="matrix">✨ Фон 2: Матрица</option><option value="stars">✨ Фон 3: Космос</option><option value="grid">✨ Фон 4: Кибер-сетка</option><option value="waves">✨ Фон 5: Волны</option><option value="embers">✨ Фон 6: Неон-искры</option><option value="binary">✨ Фон 7: Двоичный код</option><option value="hex">✨ Фон 8: Гексагоны</option><option value="aurora">✨ Фон 9: Сияние</option><option value="stealth">✨ Фон 10: Тихий</option>
-</select>
-</div>
-<h1><span id="typewriter"></span><span class="cursor">&nbsp;</span></h1>
-<p class="subtitle">Персональный веб-портал для сдачи домашних заданий и верификации технической терминологии по стандартам ГОСТ, NIST, Microsoft Learn и MITRE CVE.</p>
-<div class="nav-tabs">
-<button class="tab-btn active" onclick="switchTab('audit', this)">🛡️ Текущее ДЗ: Аудит ПО и ИБ</button>
-<button class="tab-btn" onclick="switchTab('future', this)">📂 Архив / Будущие ДЗ</button>
-</div>
-</header>
-<div id="audit" class="tab-content active">
-<article class="card">
-<div class="card-top"><div class="card-title-group"><span class="num-badge">01</span><h2>Миф о «вирусах-зомби» в классификации</h2></div><button class="copy-btn" onclick="copyText('По ГОСТ Р 51275-2006 и стандартам NIST понятия «вирус-зомби» не существует. Зомби — это статус зараженного ПК в ботнете, а программа называется Бот или Троян (Backdoor).')">📋 Копировать тезис</button></div>
-<div class="box-myth"><strong>Ошибка в задании:</strong> Утверждение, что «вирусы-зомби» — это отдельный вид компьютерных вирусов.</div>
-<div class="box-fact"><strong>Научный факт:</strong> В стандартах кибербезопасности термина «вирус-зомби» нет. <strong>Зомби (Zombie)</strong> — это статус компьютера в составе <strong>ботнета</strong>. Вредоносная программа классифицируется как <strong>Бот</strong> или <strong>Троян удалённого доступа (Backdoor)</strong>, так как она не внедряется в другие файлы.</div>
-<p>Смешивание всех видов Malware под словом «вирус» — бытовой штамп из 1990-х годов, противоречащий государственным стандартам РФ (ГОСТ) и международной базе NIST.</p>
-<div class="links-row">
-<a href="https://kaspersky.ru" target="_blank" class="proof-link">📄 Энциклопедия Касперского (Ботнет и Зомби)</a>
-<a href="https://nist.gov" target="_blank" class="proof-link">🏛️ Стандарты NIST (США): Botnet</a>
-<a href="https://cntd.ru" target="_blank" class="proof-link">🇷🇺 ГОСТ Р 51275-2006</a>
-</div>
-</article>
+    <header>
+        <div class="top-controls">
+            <div class="status-pill"><span class="pulse-dot"></span><span>SYSTEM ONLINE // AUDIT PORTAL</span></div>
+            <select id="color-select" class="select-pill" onchange="changeColorPreset(this.value)">
+                <option value="blue">🔵 Цвет 1: Кибер-синий</option>
+                <option value="emerald">🟢 Цвет 2: Изумруд</option>
+                <option value="pink">🩷 Цвет 3: Киберпанк</option>
+                <option value="amber">🟠 Цвет 4: Янтарь</option>
+                <option value="purple">🟣 Цвет 5: Ультрафиолет</option>
+                <option value="red">🔴 Цвет 6: Алый</option>
+                <option value="cyan">🩵 Цвет 7: Ледяной неон</option>
+                <option value="lime">🍏 Цвет 8: Лайм</option>
+                <option value="coral">🌅 Цвет 9: Коралл</option>
+                <option value="ocean">🌊 Цвет 10: Океан</option>
+                <option value="fuchsia">🔮 Цвет 11: Фуксия</option>
+                <option value="steel">⚪ Цвет 12: Графит</option>
+            </select>
+            <select id="bg-select" class="select-pill" onchange="changeBgMode(this.value)">
+                <option value="mesh">✨ Фон 1: Нейросеть</option>
+                <option value="matrix">✨ Фон 2: Матрица</option>
+                <option value="stars">✨ Фон 3: Космос</option>
+                <option value="grid">✨ Фон 4: Кибер-сетка</option>
+                <option value="waves">✨ Фон 5: Волны</option>
+                <option value="embers">✨ Фон 6: Неон-искры</option>
+                <option value="binary">✨ Фон 7: Двоичный код</option>
+                <option value="hex">✨ Фон 8: Гексагоны</option>
+                <option value="aurora">✨ Фон 9: Сияние</option>
+                <option value="stealth">✨ Фон 10: Тихий</option>
+            </select>
+        </div>
 
-<article class="card">
-<div class="card-top"><div class="card-title-group"><span class="num-badge">02</span><h2>Ядро Linux против версий Windows (10 / 11)</h2></div><button class="copy-btn" onclick="copyText('Linux — это ядро (kernel.org), у него нет единых пользовательских версий, есть дистрибутивы GNU/Linux. А у Windows 10 и 11 технически одно ядро NT 10.0 (документация Microsoft Learn).')">📋 Копировать тезис</button></div>
-<div class="box-myth"><strong>Ошибочный аргумент:</strong> Linux — это программа/ОС с едиными версиями (по аналогии с Windows 1.0, 8.1, 10, 11).</div>
-<div class="box-fact"><strong>Архитектурный факт:</strong> <strong>Linux</strong> — это исключительно <strong>ядро (Kernel)</strong>. Полноценные системы на его базе называются <strong>дистрибутивами GNU/Linux</strong> (Ubuntu, Debian, Astra Linux), у каждого из которых своя независимая нумерация.</div>
-<p>Ранние версии Windows (1.0 – 3.1) были графическими оболочками поверх <strong>MS-DOS</strong>. Современная линейка работает на ядре <strong>Windows NT</strong>. Согласно официальной таблице <strong>Microsoft Learn</strong>, Windows 10 и Windows 11 имеют <strong>одинаковый технический номер версии ядра — <code>10.0</code></strong>. Цифры 10 и 11 — чистый маркетинг (проверяется командой <code>ver</code> в консоли).</p>
-<div class="links-row">
-<a href="https://microsoft.com" target="_blank" class="proof-link">🪟 Microsoft Learn: Win 10 = Win 11 (Kernel 10.0)</a>
-<a href="https://kernel.org" target="_blank" class="proof-link">🐧 Kernel.org: Архив ядра Linux</a>
-<a href="https://gnu.org" target="_blank" class="proof-link">⚙️ GNU: Ядро Linux vs ОС GNU/Linux</a>
-</div>
-</article>
+        <h1><span id="typewriter"></span><span class="cursor">&nbsp;</span></h1>
+        <p class="subtitle">Персональный веб-портал для сдачи домашних заданий и верификации технической терминологии по стандартам ГОСТ, NIST, Microsoft Learn и MITRE CVE.</p>
+        
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('audit', this)">🛡️ Текущее ДЗ: Аудит ПО и ИБ</button>
+            <button class="tab-btn" onclick="switchTab('future', this)">📂 Архив / Будущие ДЗ</button>
+        </div>
+    </header>
 
-<article class="card">
-<div class="card-top"><div class="card-title-group"><span class="num-badge">03</span><h2>Сторонние антивирусы: нагрузка и уязвимости</h2></div><button class="copy-btn" onclick="copyText('Исследователи Google Project Zero доказали, что сторонние антивирусы сами содержат критические уязвимости в режиме ядра (Ring 0) и ломают защиту браузеров.')">📋 Копировать тезис</button></div>
-<div class="box-myth"><strong>Устаревшее правило:</strong> Обязательная установка стороннего антивируса (Kaspersky, ESET NOD32) для защиты ПК.</div>
-<div class="box-fact"><strong>Позиция исследователей ИБ:</strong> Сторонние антивирусы не только перегружают ЦП и ОЗУ, но и <strong>сами открывают дыры для взлома</strong>, работая с высшими привилегиями ядра (Ring 0) и вмешиваясь в шифрование HTTPS.</div>
-<p>Элитная команда <strong>Google Project Zero</strong> опубликовала десятки отчётов о критических уязвимостях в антивирусах (включая Kaspersky и ESET). Инженеры Mozilla также официально призывали удалять сторонний защитный софт, так как он отключает встроенные песочницы браузеров. Главная защита — цифровая гигиена.</p>
-<div class="links-row">
-<a href="https://blogspot.com" target="_blank" class="proof-link">🛡️ Google Project Zero: Уязвимости антивирусов</a>
-<a href="https://ocallahan.org" target="_blank" class="proof-link">🦊 Экс-инженер Mozilla: Вред антивирусного ПО</a>
-</div>
-</article>
+    <div id="audit" class="tab-content active">
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group"><span class="num-badge">01</span><h2>Миф о «вирусах-зомби» в классификации</h2></div>
+                <button class="copy-btn" onclick="copyText('По ГОСТ Р 51275-2006 и стандартам NIST понятия «вирус-зомби» не существует. Зомби — это статус зараженного ПК в ботнете, а программа называется Бот или Троян (Backdoor).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth"><strong>Ошибка в задании:</strong> Утверждение, что «вирусы-зомби» — это отдельный вид компьютерных вирусов.</div>
+            <div class="box-fact"><strong>Научный факт:</strong> В стандартах кибербезопасности термина «вирус-зомби» нет. <strong>Зомби (Zombie)</strong> — это статус компьютера в составе <strong>ботнета</strong>. Вредоносная программа классифицируется как <strong>Бот</strong> или <strong>Троян удалённого доступа (Backdoor)</strong>, так как она не внедряется в другие файлы.</div>
+            <p>Смешивание всех видов Malware под словом «вирус» — бытовой штамп из 1990-х годов, противоречащий государственным стандартам РФ (ГОСТ) и международной базе NIST.</p>
+            <div class="links-row">
+                <a href="https://kaspersky.ru" target="_blank" class="proof-link">📄 Энциклопедия Касперского (Ботнет и Зомби)</a>
+                <a href="https://nist.gov" target="_blank" class="proof-link">🏛️ Стандарты NIST (США): Botnet</a>
+                <a href="https://cntd.ru" target="_blank" class="proof-link">🇷🇺 ГОСТ Р 51275-2006</a>
+            </div>
+        </article>
 
-<article class="card">
-<div class="card-top"><div class="card-title-group"><span class="num-badge">04</span><h2>Яндекс.Браузер: Bloatware, уязвимости CVE и слежка</h2></div><button class="copy-btn" onclick="copyText('Яндекс.Браузер — перегруженное ПО (Bloatware) с закрытым кодом, регулярными уязвимостями в базе CVE и обязательной передачей метаданных по реестру ОРИ (ФЗ-374).')">📋 Копировать тезис</button></div>
-<div class="box-myth"><strong>Тезис из учебника:</strong> Яндекс.Браузер — простая и безопасная программа для просмотра веб-страниц.</div>
-<div class="box-fact"><strong>Технический и юридический факт:</strong> Проприетарное ПО категории <strong>Bloatware</strong> с закрытым исходным кодом, высоким потреблением ОЗУ, встроенными трекерами и регулярными уязвимостями для третьих лиц. Эталон приватности — Open Source (<code>Ungoogled Chromium</code>, <code>LibreWolf</code>).</div>
-<p>В международной базе <strong>MITRE CVE</strong> и бюллетенях самого Яндекса регулярно фиксируются уязвимости браузера, позволяющие злоумышленникам красть сессионные куки и данные. Кроме того, компания состоит в <strong>Реестре ОРИ Роскомнадзора</strong> (ФЗ-374), что обязывает её хранить и передавать метаданные пользователей.</p>
-<div class="links-row">
-<a href="https://yandex.ru" target="_blank" class="proof-link">🐞 Бюллетени уязвимостей Яндекса</a>
-<a href="https://mitre.org" target="_blank" class="proof-link">🔓 База уязвимостей CVE: Yandex Browser</a>
-<a href="https://rkn.gov.ru" target="_blank" class="proof-link">⚖️ Реестр ОРИ Роскомнадзора</a>
-<a href="https://github.com" target="_blank" class="proof-link">💻 Open Source эталон: Ungoogled Chromium</a>
-</div>
-</article>
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group"><span class="num-badge">02</span><h2>Ядро Linux против версий Windows (10 / 11)</h2></div>
+                <button class="copy-btn" onclick="copyText('Linux — это ядро (kernel.org), у него нет единых пользовательских версий, есть дистрибутивы GNU/Linux. А у Windows 10 и 11 технически одно ядро NT 10.0 (документация Microsoft Learn).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth"><strong>Ошибочный аргумент:</strong> Linux — это программа/ОС с едиными версиями (по аналогии с Windows 1.0, 8.1, 10, 11).</div>
+            <div class="box-fact"><strong>Архитектурный факт:</strong> <strong>Linux</strong> — это исключительно <strong>ядро (Kernel)</strong>. Полноценные системы на его базе называются <strong>дистрибутивами GNU/Linux</strong> (Ubuntu, Debian, Astra Linux), у каждого из которых своя независимая нумерация.</div>
+            <p>Ранние версии Windows (1.0 – 3.1) были графическими оболочками поверх <strong>MS-DOS</strong>. Современная линейка работает на ядре <strong>Windows NT</strong>. Согласно официальной таблице <strong>Microsoft Learn</strong>, Windows 10 и Windows 11 имеют <strong>одинаковый технический номер версии ядра — <code>10.0</code></strong>. Цифры 10 и 11 — чистый маркетинг (проверяется командой <code>ver</code> в консоли).</p>
+            <div class="links-row">
+                <a href="https://microsoft.com" target="_blank" class="proof-link">🪟 Microsoft Learn: Win 10 = Win 11 (Kernel 10.0)</a>
+                <a href="https://kernel.org" target="_blank" class="proof-link">🐧 Kernel.org: Архив ядра Linux</a>
+                <a href="https://gnu.org" target="_blank" class="proof-link">⚙️ GNU: Ядро Linux vs ОС GNU/Linux</a>
+            </div>
+        </article>
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group"><span class="num-badge">03</span><h2>Сторонние антивирусы: нагрузка и уязвимости</h2></div>
+                <button class="copy-btn" onclick="copyText('Исследователи Google Project Zero доказали, что сторонние антивирусы сами содержат критические уязвимости в режиме ядра (Ring 0) и ломают защиту браузеров.')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth"><strong>Устаревшее правило:</strong> Обязательная установка стороннего антивируса (Kaspersky, ESET NOD32) для защиты ПК.</div>
+            <div class="box-fact"><strong>Позиция исследователей ИБ:</strong> Сторонние антивирусы не только перегружают ЦП и ОЗУ, но и <strong>сами открывают дыры для взлома</strong>, работая с высшими привилегиями ядра (Ring 0) и вмешиваясь в шифрование HTTPS.</div>
+            <p>Элитная команда <strong>Google Project Zero</strong> опубликовала десятки отчётов о критических уязвимостях в антивирусах (включая Kaspersky и ESET). Инженеры Mozilla также официально призывали удалять сторонний защитный софт, так как он отключает встроенные песочницы браузеров. Главная защита — цифровая гигиена.</p>
+            <div class="links-row">
+                <a href="https://blogspot.com" target="_blank" class="proof-link">🛡️ Google Project Zero: Уязвимости антивирусов</a>
+                <a href="https://ocallahan.org" target="_blank" class="proof-link">🦊 Экс-инженер Mozilla: Вред антивирусного ПО</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group"><span class="num-badge">04</span><h2>Яндекс.Браузер: Bloatware, уязвимости CVE и слежка</h2></div>
+                <button class="copy-btn" onclick="copyText('Яндекс.Браузер — перегруженное ПО (Bloatware) с закрытым кодом, регулярными уязвимостями в базе CVE и обязательной передачей метаданных по реестру ОРИ (ФЗ-374).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth"><strong>Тезис из учебника:</strong> Яндекс.Браузер — простая и безопасная программа для просмотра веб-страниц.</div>
+            <div class="box-fact"><strong>Технический и юридический факт:</strong> Проприетарное ПО категории <strong>Bloatware</strong> с закрытым исходным кодом, высоким потреблением ОЗУ, встроенными трекерами и регулярными уязвимостями для третьих лиц. Эталон приватности — Open Source (<code>Ungoogled Chromium</code>, <code>LibreWolf</code>).</div>
+            <p>В международной базе <strong>MITRE CVE</strong> и бюллетенях самого Яндекса регулярно фиксируются уязвимости браузера, позволяющие злоумышленникам красть сессионные куки и данные. Кроме того, компания состоит в <strong>Реестре ОРИ Роскомнадзора</strong> (ФЗ-374), что обязывает её хранить и передавать метаданные пользователей.</p>
+            <div class="links-row">
+                <a href="https://yandex.ru" target="_blank" class="proof-link">🐞 Бюллетени уязвимостей Яндекса</a>
+                <a href="https://mitre.org" target="_blank" class="proof-link">🔓 База уязвимостей CVE: Yandex Browser</a>
+                <a href="https://rkn.gov.ru" target="_blank" class="proof-link">⚖️ Реестр ОРИ Роскомнадзора</a>
+                <a href="https://github.com" target="_blank" class="proof-link">💻 Open Source эталон: Ungoogled Chromium</a>
+            </div>
+        </article>
+    </div>
+
+    <div id="future" class="tab-content">
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group"><span class="num-badge">HW</span><h2>Раздел для дистанционной сдачи домашних заданий</h2></div>
+            </div>
+            <div class="box-fact"><strong>Статус раздела:</strong> Готов к публикации новых работ.</div>
+            <p>Этот портал используется для удалённой демонстрации выполненных практических работ, презентаций, кода и рефератов по информатике в случае отсутствия на уроке. Все последующие практические работы, лабораторные и разборы тем будут добавляться в этот раздел в хронологическом порядке.</p>
+        </article>
+    </div>
+
+    <footer>Веб-портал разработан на чистом HTML5 / CSS3 / Vanilla JS без сторонних фреймворков и трекеров.</footer>
 </div>
 
-<div id="future" class="tab-content">
-<article class="card">
-<div class="card-top"><div class="card-title-group"><span class="num-badge">HW</span><h2>Раздел для дистанционной сдачи домашних заданий</h2></div></div>
-<div class="box-fact"><strong>Статус раздела:</strong> Готов к публикации новых работ.</div>
-<p>Этот портал используется для удалённой демонстрации выполненных практических работ, презентаций, кода и рефератов по информатике в случае отсутствия на уроке. Все последующие практические работы, лабораторные и разборы тем будут добавляться в этот раздел в хронологическом порядке.</p>
-</article>
-</div>
-
-<footer>Веб-портал разработан на чистом HTML5 / CSS3 / Vanilla JS без сторонних фреймворков и трекеров.</footer>
-</div>
 <div id="toast">✅ Тезис скопирован в буфер обмена!</div>
 <script>
-const titleText="Технический аудит ПО и кибербезопасности",typewriterEl=document.getElementById("typewriter");let charIndex=0;
-function typeEffect(){if(charIndex<titleText.length){typewriterEl.textContent+=titleText.charAt(charIndex);charIndex++;setTimeout(typeEffect,40)}}typeEffect();
-function switchTab(t,b){document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));document.getElementById(t).classList.add('active');b.classList.add('active')}
-function copyText(t){navigator.clipboard.writeText(t).then(()=>{const o=document.getElementById("toast");o.classList.add("show");setTimeout(()=>o.classList.remove("show"),2500)})}
-const colorThemes={blue:{main:'#38bdf8',sec:'#818cf8',rgb:'56,189,248'},emerald:{main:'#34d399',sec:'#10b981',rgb:'52,211,153'},pink:{main:'#f472b6',sec:'#e879f9',rgb:'244,114,182'},amber:{main:'#fbbf24',sec:'#f59e0b',rgb:'251,191,36'},purple:{main:'#a78bfa',sec:'#c084fc',rgb:'167,139,250'},red:{main:'#fb7185',sec:'#f43f5e',rgb:'251,113,133'},cyan:{main:'#22d3ee',sec:'#06b6d4',rgb:'34,211,238'},lime:{main:'#a3e635',sec:'#84cc16',rgb:'163,230,53'},coral:{main:'#fb923c',sec:'#f97316',rgb:'251,146,60'},ocean:{main:'#60a5fa',sec:'#3b82f6',rgb:'96,165,250'},fuchsia:{main:'#e879f9',sec:'#d946ef',rgb:'232,121,249'},steel:{main:'#cbd5e1',sec:'#94a3b8',rgb:'203,213,225'}};
-let currentPreset=localStorage.getItem('portal_color_preset')||'blue';if(!colorThemes[currentPreset])currentPreset='blue';document.getElementById('color-select').value=currentPreset;
-function changeColorPreset(k){currentPreset=k;localStorage.setItem('portal_color_preset',k);const t=colorThemes[k];document.documentElement.style.setProperty('--accent',t.main);document.documentElement.style.setProperty('--sec',t.sec);document.documentElement.style.setProperty('--border',`rgba(${t.rgb},.3)`)}changeColorPreset(currentPreset);
-const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');let width,height,animId,currentMode=localStorage.getItem('portal_bg_mode')||'mesh';document.getElementById('bg-select').value=currentMode;let state={};
-function resize(){width=canvas.width=window.innerWidth;height=canvas.height=window.innerHeight;setupMode(currentMode)}window.addEventListener('resize',resize);
-function changeBgMode(m){currentMode=m;localStorage.setItem('portal_bg_mode',m);setupMode(m)}
+const titleText = "Технический аудит ПО и кибербезопасности";
+const typewriterEl = document.getElementById("typewriter");
+let charIndex = 0;
+function typeEffect() {
+    if (charIndex < titleText.length) {
+        typewriterEl.textContent += titleText.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeEffect, 40);
+    }
+}
+typeEffect();
+
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById("toast");
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2500);
+    });
+}
+
+const colorThemes = {
+    blue:    { main: '#38bdf8', sec: '#818cf8', rgb: '56, 189, 248' },
+    emerald: { main: '#34d399', sec: '#10b981', rgb: '52, 211, 153' },
+    pink:    { main: '#f472b6', sec: '#e879f9', rgb: '244, 114, 182' },
+    amber:   { main: '#fbbf24', sec: '#f59e0b', rgb: '251, 191, 36' },
+    purple:  { main: '#a78bfa', sec: '#c084fc', rgb: '167, 139, 250' },
+    red:     { main: '#fb7185', sec: '#f43f5e', rgb: '251, 113, 133' },
+    cyan:    { main: '#22d3ee', sec: '#06b6d4', rgb: '34, 211, 238' },
+    lime:    { main: '#a3e635', sec: '#84cc16', rgb: '163, 230, 53' },
+    coral:   { main: '#fb923c', sec: '#f97316', rgb: '251, 146, 60' },
+    ocean:   { main: '#60a5fa', sec: '#3b82f6', rgb: '96, 165, 250' },
+    fuchsia: { main: '#e879f9', sec: '#d946ef', rgb: '232, 121, 249' },
+    steel:   { main: '#cbd5e1', sec: '#94a3b8', rgb: '203, 213, 225' }
+};
+
+let currentPreset = localStorage.getItem('portal_color_preset') || 'blue';
+if (!colorThemes[currentPreset]) currentPreset = 'blue';
+document.getElementById('color-select').value = currentPreset;
+
+function changeColorPreset(key) {
+    currentPreset = key;
+    localStorage.setItem('portal_color_preset', key);
+    const t = colorThemes[key];
+    document.documentElement.style.setProperty('--accent', t.main);
+    document.documentElement.style.setProperty('--sec', t.sec);
+    document.documentElement.style.setProperty('--border', `rgba(${t.rgb}, 0.3)`);
+}
+changeColorPreset(currentPreset);
+
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let width, height, animId;
+let currentMode = localStorage.getItem('portal_bg_mode') || 'mesh';
+document.getElementById('bg-select').value = currentMode;
+let state = {};
+
+function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    setupMode(currentMode);
+}
+window.addEventListener('resize', resize);
+
+function changeBgMode(mode) {
+    currentMode = mode;
+    localStorage.setItem('portal_bg_mode', mode);
+    setupMode(mode);
+}
+
+function setupMode(mode) {
+    if (animId) cancelAnimationFrame(animId);
+    ctx.clearRect(0, 0, width, height);
+    state = { time: 0 };
+
+    if (mode === 'mesh') {
+        const c = Math.min(Math.floor(width / 18), 75);
+        state.items = Array.from({ length: c }, () => ({
+            x: Math.random() * width, y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.7, vy: (Math.random() - 0.5) * 0.7, r: Math.random() * 2 + 1
+        }));
+    } else if (mode === 'matrix') {
+        state.drops = Array(Math.floor(width / 18)).fill(1);
+        state.chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+    } else if (mode === 'stars') {
+        state.stars = Array.from({ length: 180 }, () => ({
+            x: (Math.random() - 0.5) * width, y: (Math.random() - 0.5) * height, z: Math.random() * width
+        }));
+    } else if (mode === 'embers') {
+        state.embers = Array.from({ length: 70 }, () => ({
+            x: Math.random() * width, y: Math.random() * height,
+            vy: -(Math.random() * 1.2 + 0.4), vx: (Math.random() - 0.5) * 0.5, r: Math.random() * 2.5 + 1
+        }));
+    } else if (mode === 'binary') {
+        state.streams = Array.from({ length: Math.floor(height / 24) }, (_, i) => ({
+            y: i * 24 + 18, x: Math.random() * width,
+            speed: (Math.random() * 1.5 + 0.5) * (i % 2 === 0 ? 1 : -1),
+            text: Array.from({ length: 40 }, () => Math.round(Math.random())).join(' ')
+        }));
+    }
+    if (mode !== 'stealth') loop();
+}
+
+function loop() {
+    state.time += 0.02;
+    const t = colorThemes[currentPreset];
+    const cM = t.main, cR = t.rgb;
+
+    if (currentMode === 'mesh') {
+        ctx.clearRect(0, 0, width, height); ctx.fillStyle = cM;
+        state.items.forEach((p, i) => {
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < 0 || p.x > width) p.vx *= -1;
+            if (p.y < 0 || p.y > height) p.vy *= -1;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+            for (let j = i + 1; j < state.items.length; j++) {
+                const p2 = state.items[j], d = Math.hypot(p.x - p2.x, p.y - p2.y);
+                if (d < 130) {
+                    ctx.strokeStyle = `rgba(${cR}, ${0.25 * (1 - d / 130)})`;
+                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                }
+            }
+        });
+    } else if (currentMode === 'matrix') {
+        ctx.fillStyle = 'rgba(6, 9, 15, 0.08)'; ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = cM; ctx.font = '15px monospace';
+        state.drops.forEach((y, i) => {
+            ctx.fillText(state.chars[Math.floor(Math.random() * state.chars.length)], i * 18, y * 18);
+            if (y * 18 > height && Math.random() > 0.975) state.drops[i] = 0;
+            state.drops[i]++;
+        });
+    } else if (currentMode === 'stars') {
+        ctx.fillStyle = 'rgba(6, 9, 15, 0.35)'; ctx.fillRect(0, 0, width, height);
+        const cx = width / 2, cy = height / 2;
+        state.stars.forEach(s => {
+            s.z -= 4;
+            if (s.z <= 0) { s.z = width; s.x = (Math.random() - 0.5) * width; s.y = (Math.random() - 0.5) * height; }
+            const sx = (s.x / s.z) * width + cx, sy = (s.y / s.z) * height + cy, r = (1 - s.z / width) * 3;
+            ctx.fillStyle = cM; ctx.beginPath(); ctx.arc(sx, sy, Math.max(0.5, r), 0, Math.PI * 2); ctx.fill();
+        });
+    } else if (currentMode === 'grid') {
+        ctx.clearRect(0, 0, width, height); ctx.strokeStyle = `rgba(${cR}, 0.25)`;
+        const st = 45, of = (state.time * 25) % st;
+        for (let x = 0; x < width; x += st) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); }
+        for (let y = of; y < height; y += st) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
+    } else if (currentMode === 'waves') {
+        ctx.clearRect(0, 0, width, height);
+        for (let w = 0; w < 4; w++) {
+            ctx.beginPath(); ctx.strokeStyle = `rgba(${cR}, ${0.15 + w * 0.06})`; ctx.lineWidth = 2;
+            for (let x = 0; x < width; x += 10) {
+                const y = height / 2 + Math.sin(x * 0.005 + state.time + w) * (60 + w * 25);
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+    } else if (currentMode === 'embers') {
+        ctx.clearRect(0, 0, width, height);
+        state.embers.forEach(e => {
+            e.y += e.vy; e.x += e.vx;
+            if (e.y < 0) { e.y = height; e.x = Math.random() * width; }
+            ctx.fillStyle = `rgba(${cR}, ${0.4 + Math.sin(state.time * 3 + e.x) * 0.3})`;
+            ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2); ctx.fill();
+        });
+    } else if (currentMode === 'binary') {
+        ctx.clearRect(0, 0, width, height); ctx.fillStyle = `rgba(${cR}, 0.18)`; ctx.font = '14px monospace';
+        state.streams.forEach(st => {
+            st.x += st.speed; if (st.x > width) st.x = -400; if (st.x < -400) st.x = width;
+            ctx.fillText(st.text, st.x, st.y);
+        });
+    } else if (currentMode === 'hex') {
+        ctx.clearRect(0, 0, width, height);
+        const r = 35, dx = r * 1.5, dy = r * Math.sqrt(3);
+        for (let x = 0; x < width + dx; x += dx) {
+            for (let y = 0; y < height + dy; y += dy) {
+                const cy = y + (Math.round(x / dx) % 2 === 0 ? 0 : dy / 2), p = Math.sin(x * 0.01 + y * 0.01 + state.time * 2);
+                ctx.strokeStyle = `rgba(${cR}, ${0.06 + Math.max(0, p) * 0.18})`;
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const a = (Math.PI / 3) * i, px = x + r * Math.cos(a), py = cy + r * Math.sin(a);
+                    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                }
+                ctx.closePath(); ctx.stroke();
+            }
+        }
+    } else if (currentMode === 'aurora') {
+        ctx.clearRect(0, 0, width, height);
+        const g1 = ctx.createRadialGradient(width * 0.3 + Math.sin(state.time) * 150, height * 0.3, 10, width * 0.3, height * 0.3, 450);
+        g1.addColorStop(0, `rgba(${cR}, 0.22)`); g1.addColorStop(1, 'transparent');
+        const g2 = ctx.createRadialGradient(width * 0.7 + Math.cos(state.time * 0.8) * 150, height * 0.6, 10, width * 0.7, height * 0.6, 450);
+        g2.addColorStop(0, `rgba(${cR}, 0.16)`); g2.addColorStop(1, 'transparent');
+        ctx.fillStyle = g1; ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = g2; ctx.fillRect(0, 0, width, height);
+    }
+    animId = requestAnimationFrame(loop);
+}
+resize();
+</script>
+</body>
+</html>
