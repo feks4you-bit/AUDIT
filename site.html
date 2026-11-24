@@ -1,0 +1,1484 @@
+```python
+html_content = """<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT-Портал ДЗ & Технический Аудит</title>
+    <style>
+        :root {
+            --bg-dark: #06090f;
+            --bg-radial: #0f172a;
+            --glass-bg: rgba(16, 22, 34, 0.75);
+            --accent-blue: #38bdf8;
+            --accent-purple: #818cf8;
+            --accent-rgb: 56, 189, 248;
+            --accent2-rgb: 129, 140, 248;
+            --danger: #fb7185;
+            --success: #34d399;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.65;
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background-color 0.4s ease;
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 0%, var(--bg-radial) 0%, var(--bg-dark) 80%);
+            transition: background 0.4s ease;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(var(--accent-rgb), 0.28);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(var(--accent-rgb), 0.06);
+            animation: fadeInDown 0.8s ease-out;
+            transition: border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            color: var(--success);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-family: monospace;
+            margin-bottom: 18px;
+        }
+        .pulse-dot {
+            width: 8px; height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 1.5s infinite;
+        }
+        .controls-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .cyber-select {
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--accent-blue);
+            border: 1px solid rgba(var(--accent-rgb), 0.4);
+            padding: 7px 14px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .cyber-select:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.25);
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 70%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            min-height: 2.8rem;
+        }
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: var(--accent-blue);
+            animation: blink 0.8s infinite;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto 24px auto;
+            font-size: 1.05rem;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: var(--text-muted);
+            padding: 10px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-btn:hover {
+            color: #fff;
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.22), rgba(var(--accent2-rgb), 0.22));
+            border-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.25);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(var(--accent-rgb), 0.24);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .card.visible { opacity: 1; transform: translateY(0); }
+        .card:hover {
+            transform: translateY(-4px);
+            background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.16), rgba(var(--accent2-rgb), 0.14)), var(--glass-bg);
+            border-color: var(--accent-blue);
+            box-shadow: 0 15px 40px rgba(var(--accent-rgb), 0.24), inset 0 0 24px rgba(var(--accent-rgb), 0.1);
+        }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .card-title-group { display: flex; align-items: center; gap: 14px; }
+        .num-badge {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #06090f;
+            font-weight: 800;
+            font-family: monospace;
+            font-size: 1rem;
+            padding: 6px 12px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.4);
+        }
+        h2 { font-size: 1.35rem; color: #fff; }
+        .copy-btn {
+            background: rgba(var(--accent-rgb), 0.12);
+            border: 1px solid rgba(var(--accent-rgb), 0.35);
+            color: var(--accent-blue);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .copy-btn:hover { background: var(--accent-blue); color: #06090f; font-weight: 600; }
+        .box-myth {
+            background: rgba(251, 113, 133, 0.08);
+            border-left: 4px solid var(--danger);
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 16px;
+        }
+        .box-myth strong { color: var(--danger); }
+        .box-fact {
+            background: rgba(52, 211, 153, 0.08);
+            border-left: 4px solid var(--success);
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 18px;
+        }
+        .box-fact strong { color: var(--success); }
+        p { margin-bottom: 14px; color: #cbd5e1; }
+        code {
+            font-family: monospace;
+            background: rgba(var(--accent-rgb), 0.15);
+            color: var(--accent-blue);
+            padding: 2px 7px;
+            border-radius: 5px;
+            border: 1px solid rgba(var(--accent-rgb), 0.25);
+        }
+        .links-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        .proof-link {
+            text-decoration: none;
+            background: rgba(15, 23, 42, 0.8);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .proof-link:hover {
+            border-color: var(--accent-blue);
+            background: rgba(var(--accent-rgb), 0.18);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(var(--accent-rgb), 0.25);
+        }
+        #toast {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #06090f;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+        }
+        #toast.show { transform: translateY(0); opacity: 1; }
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 50px;
+            padding: 20px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 600px) { h1 { font-size: 1.65rem; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="container">
+    <header>
+        <div class="status-pill">
+            <span class="pulse-dot"></span>
+            <span>SYSTEM ONLINE // AUDIT PORTAL</span>
+        </div>
+        <div class="controls-bar">
+            <select id="color-select" class="cyber-select" onchange="changeColorTheme(this.value)">
+                <option value="cyber-blue">🔵 Цвет 1: Кибер-синий</option>
+                <option value="emerald">🟢 Цвет 2: Изумруд (Hacker)</option>
+                <option value="cyberpunk">🩷 Цвет 3: Киберпанк (Неон)</option>
+                <option value="amber">🟠 Цвет 4: Янтарь (Золото)</option>
+                <option value="violet">🟣 Цвет 5: Ультрафиолет</option>
+                <option value="crimson">🔴 Цвет 6: Алый (Red Team)</option>
+                <option value="cyan">🩵 Цвет 7: Ледяной неон (Cyan)</option>
+                <option value="lime">🍏 Цвет 8: Кислотный лайм</option>
+                <option value="sunset">🌅 Цвет 9: Закат (Коралл)</option>
+                <option value="ocean">🌊 Цвет 10: Глубокий океан</option>
+                <option value="magenta">🔮 Цвет 11: Фуксия (Synthwave)</option>
+                <option value="monochrome">⚪ Цвет 12: Графит (Сталь)</option>
+            </select>
+            <select id="bg-select" class="cyber-select" onchange="changeBgMode(this.value)">
+                <option value="mesh">✨ Анимация 1: Нейросеть</option>
+                <option value="matrix">✨ Анимация 2: Матрица</option>
+                <option value="stars">✨ Анимация 3: Космос</option>
+                <option value="grid">✨ Анимация 4: Кибер-сетка</option>
+                <option value="waves">✨ Анимация 5: Волны</option>
+                <option value="embers">✨ Анимация 6: Неон-искры</option>
+                <option value="binary">✨ Анимация 7: Двоичный код</option>
+                <option value="hex">✨ Анимация 8: Гексагоны</option>
+                <option value="aurora">✨ Анимация 9: Сияние</option>
+                <option value="stealth">✨ Анимация 10: Тихий (Без анимации)</option>
+            </select>
+        </div>
+
+        <h1><span id="typewriter"></span><span class="cursor">&nbsp;</span></h1>
+        <p class="subtitle">Персональный веб-портал для сдачи домашних заданий и верификации технической терминологии по стандартам ГОСТ, NIST, Microsoft Learn и MITRE CVE.</p>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('audit', this)">🛡️ Текущее ДЗ: Аудит ПО и ИБ</button>
+            <button class="tab-btn" onclick="switchTab('future', this)">📂 Архив / Будущие ДЗ</button>
+        </div>
+    </header>
+
+    <div id="audit" class="tab-content active">
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">01</span>
+                    <h2>Миф о «вирусах-зомби» в классификации</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('По ГОСТ Р 51275-2006 и стандартам NIST понятия «вирус-зомби» не существует. Зомби — это статус зараженного ПК в ботнете, а программа называется Бот или Троян (Backdoor).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Ошибка в задании:</strong> Утверждение, что «вирусы-зомби» — это отдельный вид компьютерных вирусов.
+            </div>
+            <div class="box-fact">
+                <strong>Научный факт:</strong> В стандартах кибербезопасности термина «вирус-зомби» нет. <strong>Зомби (Zombie)</strong> — это статус компьютера в составе <strong>ботнета</strong>. Вредоносная программа классифицируется как <strong>Бот</strong> или <strong>Троян удалённого доступа (Backdoor)</strong>, так как она не внедряется в другие файлы.
+            </div>
+            <p>Смешивание всех видов Malware под словом «вирус» — бытовой штамп из 1990-х годов, противоречащий государственным стандартам РФ (ГОСТ) и международной базе NIST.</p>
+            <div class="links-row">
+                <a href="https://encyclopedia.kaspersky.ru/glossary/botnet/" target="_blank" class="proof-link">📄 Энциклопедия Касперского (Ботнет и Зомби)</a>
+                <a href="https://csrc.nist.gov/glossary/term/botnet" target="_blank" class="proof-link">🏛️ Стандарты NIST (США): Zombie</a>
+                <a href="https://docs.cntd.ru/document/1200057516" target="_blank" class="proof-link">🇷🇺 ГОСТ Р 51275-2006</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">02</span>
+                    <h2>Ядро Linux против версий Windows (10 / 11)</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Linux — это ядро (kernel.org), у него нет единых пользовательских версий, есть дистрибутивы GNU/Linux. А у Windows 10 и 11 технически одно ядро NT 10.0 (документация Microsoft Learn).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Ошибочный аргумент:</strong> Linux — это программа/ОС с едиными версиями (по аналогии с Windows 1.0, 8.1, 10, 11).
+            </div>
+            <div class="box-fact">
+                <strong>Архитектурный факт:</strong> <strong>Linux</strong> — это исключительно <strong>ядро (Kernel)</strong>. Полноценные системы на его базе называются <strong>дистрибутивами GNU/Linux</strong> (Ubuntu, Debian, Astra Linux), у каждого из которых своя независимая нумерация.
+            </div>
+            <p>Ранние версии Windows (1.0 – 3.1) были графическими оболочками поверх <strong>MS-DOS</strong>. Современная линейка работает на ядре <strong>Windows NT</strong>. Согласно официальной таблице <strong>Microsoft Learn</strong>, Windows 10 и Windows 11 имеют <strong>одинаковый технический номер версии ядра — <code>10.0</code></strong>. Цифры 10 и 11 — чистый маркетинг (проверяется командой <code>ver</code> в консоли).</p>
+            <div class="links-row">
+                <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/operating-system-version" target="_blank" class="proof-link">🪟 Microsoft Learn: Win 10 = Win 11 (Kernel 10.0)</a>
+                <a href="https://www.kernel.org/" target="_blank" class="proof-link">🐧 Kernel.org: Архив ядра Linux</a>
+                <a href="https://www.gnu.org/gnu/linux-and-gnu.html" target="_blank" class="proof-link">⚙️ GNU: Ядро Linux vs ОС GNU/Linux</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">03</span>
+                    <h2>Сторонние антивирусы: нагрузка и уязвимости</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Исследователи Google Project Zero доказали, что сторонние антивирусы сами содержат критические уязвимости в режиме ядра (Ring 0) и ломают защиту браузеров.')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Устаревшее правило:</strong> Обязательная установка стороннего антивируса (Kaspersky, ESET NOD32) для защиты ПК.
+            </div>
+            <div class="box-fact">
+                <strong>Позиция исследователей ИБ:</strong> Сторонние антивирусы не только перегружают ЦП и ОЗУ, но и <strong>сами открывают дыры для взлома</strong>, работая с высшими привилегиями ядра (Ring 0) и вмешиваясь в шифрование HTTPS.
+            </div>
+            <p>Элитная команда <strong>Google Project Zero</strong> опубликовала десятки отчётов о критических уязвимостях в антивирусах (включая Kaspersky и ESET). Инженеры Mozilla также официально призывали удалять сторонний защитный софт, так как он отключает встроенные песочницы браузеров. Главная защита — цифровая гигиена.</p>
+            <div class="links-row">
+                <a href="https://googleprojectzero.blogspot.com/" target="_blank" class="proof-link">🛡️ Google Project Zero: Уязвимости антивирусов</a>
+                <a href="https://robert.ocallahan.org/2017/01/disable-your-antivirus-software-except.html" target="_blank" class="proof-link">🦊 Экс-инженер Mozilla: Вред антивирусного ПО</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">04</span>
+                    <h2>Яндекс.Браузер: Bloatware, уязвимости CVE и слежка</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Яндекс.Браузер — перегруженное ПО (Bloatware) с закрытым кодом, регулярными уязвимостями в базе CVE и обязательной передачей метаданных по реестру ОРИ (ФЗ-374).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Тезис из учебника:</strong> Яндекс.Браузер — простая и безопасная программа для просмотра веб-страниц.
+            </div>
+            <div class="box-fact">
+                <strong>Технический и юридический факт:</strong> Проприетарное ПО категории <strong>Bloatware</strong> с закрытым исходным кодом, высоким потреблением ОЗУ, встроенными трекерами и регулярными уязвимостями для третьих лиц. Эталон приватности — Open Source (<code>Ungoogled Chromium</code>, <code>LibreWolf</code>).
+            </div>
+            <p>В международной базе <strong>MITRE CVE</strong> и бюллетенях самого Яндекса регулярно фиксируются уязвимости браузера, позволяющие злоумышленникам красть сессионные куки и данные. Кроме того, компания состоит в <strong>Реестре ОРИ Роскомнадзора</strong> (ФЗ-374), что обязывает её хранить и передавать метаданные пользователей.</p>
+            <div class="links-row">
+                <a href="https://yandex.ru/security/advisories" target="_blank" class="proof-link">🐞 Бюллетени уязвимостей Яндекса</a>
+                <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Yandex+Browser" target="_blank" class="proof-link">🔓 База уязвимостей CVE: Yandex Browser</a>
+                <a href="https://97-fz.rkn.gov.ru/" target="_blank" class="proof-link">⚖️ Реестр ОРИ Роскомнадзора</a>
+                <a href="https://github.com/ungoogled-software/ungoogled-chromium" target="_blank" class="proof-link">💻 Open Source эталон: Ungoogled Chromium</a>
+            </div>
+        </article>
+    </div>
+
+    <div id="future" class="tab-content">
+        <article class="card visible">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">HW</span>
+                    <h2>Раздел для дистанционной сдачи домашних заданий</h2>
+                </div>
+            </div>
+            <div class="box-fact">
+                <strong>Статус раздела:</strong> Готов к публикации новых работ.
+            </div>
+            <p>Этот портал используется для удалённой демонстрации выполненных практических работ, презентаций, кода и рефератов по информатике в случае отсутствия на уроке. Все последующие практические работы, лабораторные и разборы тем будут добавляться в этот раздел в хронологическом порядке.</p>
+        </article>
+    </div>
+
+    <footer>
+        Веб-портал разработан на чистом HTML5 / CSS3 / Vanilla JS без сторонних фреймворков и трекеров.
+    </footer>
+</div>
+
+<div id="toast">✅ Тезис скопирован в буфер обмена!</div>
+
+<script>
+    const colorThemes = {
+        'cyber-blue': {
+            bgDark: '#06090f', bgRadial: '#0f172a', glassBg: 'rgba(16, 22, 34, 0.75)',
+            accent1: '#38bdf8', accent2: '#818cf8', rgb1: '56, 189, 248', rgb2: '129, 140, 248',
+            fadeBg: 'rgba(6, 9, 15, 0.08)', fadeStars: 'rgba(6, 9, 15, 0.35)'
+        },
+        'emerald': {
+            bgDark: '#040d09', bgRadial: '#0a261a', glassBg: 'rgba(10, 26, 19, 0.75)',
+            accent1: '#10b981', accent2: '#34d399', rgb1: '16, 185, 129', rgb2: '52, 211, 153',
+            fadeBg: 'rgba(4, 13, 9, 0.08)', fadeStars: 'rgba(4, 13, 9, 0.35)'
+        },
+        'cyberpunk': {
+            bgDark: '#0d0614', bgRadial: '#260b36', glassBg: 'rgba(26, 12, 36, 0.75)',
+            accent1: '#f43f5e', accent2: '#d946ef', rgb1: '244, 63, 94', rgb2: '217, 70, 239',
+            fadeBg: 'rgba(13, 6, 20, 0.08)', fadeStars: 'rgba(13, 6, 20, 0.35)'
+        },
+        'amber': {
+            bgDark: '#0f0a04', bgRadial: '#261909', glassBg: 'rgba(28, 20, 10, 0.75)',
+            accent1: '#f59e0b', accent2: '#fb923c', rgb1: '245, 158, 11', rgb2: '251, 146, 60',
+            fadeBg: 'rgba(15, 10, 4, 0.08)', fadeStars: 'rgba(15, 10, 4, 0.35)'
+        },
+        'violet': {
+            bgDark: '#090614', bgRadial: '#1b1138', glassBg: 'rgba(20, 14, 41, 0.75)',
+            accent1: '#a855f7', accent2: '#6366f1', rgb1: '168, 85, 247', rgb2: '99, 102, 241',
+            fadeBg: 'rgba(9, 6, 20, 0.08)', fadeStars: 'rgba(9, 6, 20, 0.35)'
+        },
+        'crimson': {
+            bgDark: '#120507', bgRadial: '#2b0a10', glassBg: 'rgba(31, 10, 14, 0.76)',
+            accent1: '#ef4444', accent2: '#f97316', rgb1: '239, 68, 68', rgb2: '249, 115, 22',
+            fadeBg: 'rgba(18, 5, 7, 0.08)', fadeStars: 'rgba(18, 5, 7, 0.35)'
+        },
+        'cyan': {
+            bgDark: '#040e12', bgRadial: '#082733', glassBg: 'rgba(9, 27, 36, 0.75)',
+            accent1: '#06b6d4', accent2: '#22d3ee', rgb1: '6, 182, 212', rgb2: '34, 211, 238',
+            fadeBg: 'rgba(4, 14, 18, 0.08)', fadeStars: 'rgba(4, 14, 18, 0.35)'
+        },
+        'lime': {
+            bgDark: '#070f04', bgRadial: '#15290a', glassBg: 'rgba(16, 31, 10, 0.75)',
+            accent1: '#84cc16', accent2: '#a3e635', rgb1: '132, 204, 22', rgb2: '163, 230, 53',
+            fadeBg: 'rgba(7, 15, 4, 0.08)', fadeStars: 'rgba(7, 15, 4, 0.35)'
+        },
+        'sunset': {
+            bgDark: '#120709', bgRadial: '#2e1118', glassBg: 'rgba(33, 14, 19, 0.75)',
+            accent1: '#fb7185', accent2: '#fbbf24', rgb1: '251, 113, 133', rgb2: '251, 191, 36',
+            fadeBg: 'rgba(18, 7, 9, 0.08)', fadeStars: 'rgba(18, 7, 9, 0.35)'
+        },
+        'ocean': {
+            bgDark: '#030812', bgRadial: '#091936', glassBg: 'rgba(10, 21, 43, 0.76)',
+            accent1: '#3b82f6', accent2: '#14b8a6', rgb1: '59, 130, 246', rgb2: '20, 184, 166',
+            fadeBg: 'rgba(3, 8, 18, 0.08)', fadeStars: 'rgba(3, 8, 18, 0.35)'
+        },
+        'magenta': {
+            bgDark: '#110412', bgRadial: '#2b092e', glassBg: 'rgba(31, 10, 33, 0.76)',
+            accent1: '#ec4899', accent2: '#8b5cf6', rgb1: '236, 72, 153', rgb2: '139, 92, 246',
+            fadeBg: 'rgba(17, 4, 18, 0.08)', fadeStars: 'rgba(17, 4, 18, 0.35)'
+        },
+        'monochrome': {
+            bgDark: '#090a0c', bgRadial: '#181a1f', glassBg: 'rgba(22, 24, 29, 0.78)',
+            accent1: '#e2e8f0', accent2: '#94a3b8', rgb1: '226, 232, 240', rgb2: '148, 163, 184',
+            fadeBg: 'rgba(9, 10, 12, 0.08)', fadeStars: 'rgba(9, 10, 12, 0.35)'
+        }
+    };
+
+    let currentThemeKey = localStorage.getItem('portal_color_theme') || 'cyber-blue';
+    if (!colorThemes[currentThemeKey]) currentThemeKey = 'cyber-blue';
+    let activeTheme = colorThemes[currentThemeKey];
+    document.getElementById('color-select').value = currentThemeKey;
+
+    function applyColorTheme(key) {
+        activeTheme = colorThemes[key] || colorThemes['cyber-blue'];
+        const root = document.documentElement.style;
+        root.setProperty('--bg-dark', activeTheme.bgDark);
+        root.setProperty('--bg-radial', activeTheme.bgRadial);
+        root.setProperty('--glass-bg', activeTheme.glassBg);
+        root.setProperty('--accent-blue', activeTheme.accent1);
+        root.setProperty('--accent-purple', activeTheme.accent2);
+        root.setProperty('--accent-rgb', activeTheme.rgb1);
+        root.setProperty('--accent2-rgb', activeTheme.rgb2);
+    }
+
+    function changeColorTheme(key) {
+        currentThemeKey = key;
+        localStorage.setItem('portal_color_theme', key);
+        applyColorTheme(key);
+    }
+    applyColorTheme(currentThemeKey);
+
+    const titleText = "Технический аудит ПО и кибербезопасности";
+    const typewriterEl = document.getElementById("typewriter");
+    let charIndex = 0;
+
+    function typeEffect() {
+        if (charIndex < titleText.length) {
+            typewriterEl.textContent += titleText.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeEffect, 45);
+        }
+    }
+    window.addEventListener("load", typeEffect);
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+        revealCards();
+    }
+
+    function revealCards() {
+        const cards = document.querySelectorAll('.tab-content.active .card');
+        cards.forEach((card, index) => {
+            setTimeout(() => { card.classList.add('visible'); }, index * 150);
+        });
+    }
+    window.addEventListener("load", revealCards);
+
+    function copyText(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById("toast");
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 2500);
+        });
+    }
+
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, animId;
+    let currentMode = localStorage.getItem('portal_bg_mode') || 'mesh';
+    document.getElementById('bg-select').value = currentMode;
+    let state = {};
+
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        setupMode(currentMode);
+    }
+    window.addEventListener('resize', resize);
+
+    function changeBgMode(mode) {
+        currentMode = mode;
+        localStorage.setItem('portal_bg_mode', mode);
+        setupMode(mode);
+    }
+
+    function setupMode(mode) {
+        if (animId) {
+            cancelAnimationFrame(animId);
+            animId = null;
+        }
+        ctx.clearRect(0, 0, width, height);
+        state = { time: 0 };
+
+        if (mode === 'mesh') {
+            const count = Math.min(Math.floor(width / 18), 75);
+            state.items = Array.from({ length: count }, () => ({
+                x: Math.random() * width, y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.7, vy: (Math.random() - 0.5) * 0.7, r: Math.random() * 2 + 1
+            }));
+        } else if (mode === 'matrix') {
+            state.drops = Array(Math.floor(width / 18)).fill(1);
+            state.chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+        } else if (mode === 'stars') {
+            state.stars = Array.from({ length: 180 }, () => ({
+                x: (Math.random() - 0.5) * width, y: (Math.random() - 0.5) * height, z: Math.random() * width
+            }));
+        } else if (mode === 'embers') {
+            state.embers = Array.from({ length: 70 }, () => ({
+                x: Math.random() * width, y: Math.random() * height,
+                vy: -(Math.random() * 1.2 + 0.4), vx: (Math.random() - 0.5) * 0.5, r: Math.random() * 2.5 + 1
+            }));
+        } else if (mode === 'binary') {
+            state.streams = Array.from({ length: Math.floor(height / 24) }, (_, i) => ({
+                y: i * 24 + 18, x: Math.random() * width,
+                speed: (Math.random() * 1.5 + 0.5) * (i % 2 === 0 ? 1 : -1),
+                text: Array.from({ length: 40 }, () => Math.round(Math.random())).join(' ')
+            }));
+        }
+        if (mode !== 'stealth') loop();
+    }
+
+    function loop() {
+        if (currentMode === 'stealth') return;
+        state.time += 0.02;
+        if (currentMode === 'mesh') {
+            ctx.clearRect(0, 0, width, height); ctx.fillStyle = activeTheme.accent1;
+            state.items.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+                for (let j = i + 1; j < state.items.length; j++) {
+                    const p2 = state.items[j], dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 130) {
+                        ctx.strokeStyle = `rgba(${activeTheme.rgb1}, ${0.22 * (1 - dist / 130)})`;
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                    }
+                }
+            });
+        } else if (currentMode === 'matrix') {
+            ctx.fillStyle = activeTheme.fadeBg; ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = activeTheme.accent1; ctx.font = '15px monospace';
+            state.drops.forEach((y, i) => {
+                ctx.fillText(state.chars[Math.floor(Math.random() * state.chars.length)], i * 18, y * 18);
+                if (y * 18 > height && Math.random() > 0.975) state.drops[i] = 0;
+                state.drops[i]++;
+            });
+        } else if (currentMode === 'stars') {
+            ctx.fillStyle = activeTheme.fadeStars; ctx.fillRect(0, 0, width, height);
+            const cx = width / 2, cy = height / 2;
+            state.stars.forEach(s => {
+                s.z -= 4;
+                if (s.z <= 0) { s.z = width; s.x = (Math.random() - 0.5) * width; s.y = (Math.random() - 0.5) * height; }
+                const sx = (s.x / s.z) * width + cx, sy = (s.y / s.z) * height + cy, r = (1 - s.z / width) * 3;
+                ctx.fillStyle = activeTheme.accent1; ctx.beginPath(); ctx.arc(sx, sy, Math.max(0.5, r), 0, Math.PI * 2); ctx.fill();
+            });
+        } else if (currentMode === 'grid') {
+            ctx.clearRect(0, 0, width, height); ctx.strokeStyle = `rgba(${activeTheme.rgb2}, 0.2)`;
+            const step = 45, offset = (state.time * 25) % step;
+            for (let x = 0; x < width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); }
+            for (let y = offset; y < height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
+        } else if (currentMode === 'waves') {
+            ctx.clearRect(0, 0, width, height);
+            for (let w = 0; w < 4; w++) {
+                ctx.beginPath(); ctx.strokeStyle = w % 2 === 0 ? `rgba(${activeTheme.rgb1}, 0.25)` : `rgba(${activeTheme.rgb2}, 0.25)`; ctx.lineWidth = 2;
+                for (let x = 0; x < width; x += 10) {
+                    const y = height / 2 + Math.sin(x * 0.005 + state.time + w) * (60 + w * 25);
+                    if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+        } else if (currentMode === 'embers') {
+            ctx.clearRect(0, 0, width, height);
+            state.embers.forEach(e => {
+                e.y += e.vy; e.x += e.vx;
+                if (e.y < 0) { e.y = height; e.x = Math.random() * width; }
+                ctx.fillStyle = `rgba(${activeTheme.rgb1}, ${0.4 + Math.sin(state.time * 3 + e.x) * 0.3})`;
+                ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2); ctx.fill();
+            });
+        } else if (currentMode === 'binary') {
+            ctx.clearRect(0, 0, width, height); ctx.fillStyle = `rgba(${activeTheme.rgb1}, 0.16)`; ctx.font = '14px monospace';
+            state.streams.forEach(st => {
+                st.x += st.speed; if (st.x > width) st.x = -400; if (st.x < -400) st.x = width;
+                ctx.fillText(st.text, st.x, st.y);
+            });
+        } else if (currentMode === 'hex') {
+            ctx.clearRect(0, 0, width, height);
+            const r = 35, dx = r * 1.5, dy = r * Math.sqrt(3);
+            for (let x = 0; x < width + dx; x += dx) {
+                for (let y = 0; y < height + dy; y += dy) {
+                    const cy = y + (Math.round(x / dx) % 2 === 0 ? 0 : dy / 2);
+                    const pulse = Math.sin(x * 0.01 + y * 0.01 + state.time * 2);
+                    ctx.strokeStyle = `rgba(${activeTheme.rgb1}, ${0.06 + Math.max(0, pulse) * 0.15})`;
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        const a = (Math.PI / 3) * i, px = x + r * Math.cos(a), py = cy + r * Math.sin(a);
+                        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath(); ctx.stroke();
+                }
+            }
+        } else if (currentMode === 'aurora') {
+            ctx.clearRect(0, 0, width, height);
+            const g1 = ctx.createRadialGradient(width * 0.3 + Math.sin(state.time) * 150, height * 0.3, 10, width * 0.3, height * 0.3, 450);
+            g1.addColorStop(0, `rgba(${activeTheme.rgb1}, 0.2)`); g1.addColorStop(1, 'transparent');
+            const g2 = ctx.createRadialGradient(width * 0.7 + Math.cos(state.time * 0.8) * 150, height * 0.6, 10, width * 0.7, height * 0.6, 450);
+            g2.addColorStop(0, `rgba(${activeTheme.rgb2}, 0.2)`); g2.addColorStop(1, 'transparent');
+            ctx.fillStyle = g1; ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = g2; ctx.fillRect(0, 0, width, height);
+        }
+        animId = requestAnimationFrame(loop);
+    }
+
+    resize();
+</script>
+
+</body>
+</html>
+"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("OK")
+
+
+```
+
+```text
+OK
+
+
+```
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT-Портал ДЗ & Технический Аудит</title>
+    <style>
+        :root {
+            --bg-dark: #06090f;
+            --bg-radial: #0f172a;
+            --glass-bg: rgba(16, 22, 34, 0.75);
+            --accent-blue: #38bdf8;
+            --accent-purple: #818cf8;
+            --accent-rgb: 56, 189, 248;
+            --accent2-rgb: 129, 140, 248;
+            --danger: #fb7185;
+            --success: #34d399;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.65;
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background-color 0.4s ease;
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 0%, var(--bg-radial) 0%, var(--bg-dark) 80%);
+            transition: background 0.4s ease;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(var(--accent-rgb), 0.28);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(var(--accent-rgb), 0.06);
+            animation: fadeInDown 0.8s ease-out;
+            transition: border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            color: var(--success);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-family: monospace;
+            margin-bottom: 18px;
+        }
+        .pulse-dot {
+            width: 8px; height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 1.5s infinite;
+        }
+        .controls-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .cyber-select {
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--accent-blue);
+            border: 1px solid rgba(var(--accent-rgb), 0.4);
+            padding: 7px 14px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .cyber-select:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.25);
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 70%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            min-height: 2.8rem;
+        }
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: var(--accent-blue);
+            animation: blink 0.8s infinite;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto 24px auto;
+            font-size: 1.05rem;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            color: var(--text-muted);
+            padding: 10px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-btn:hover {
+            color: #fff;
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.22), rgba(var(--accent2-rgb), 0.22));
+            border-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.25);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(var(--accent-rgb), 0.24);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .card.visible { opacity: 1; transform: translateY(0); }
+        .card:hover {
+            transform: translateY(-4px);
+            background: linear-gradient(145deg, rgba(var(--accent-rgb), 0.16), rgba(var(--accent2-rgb), 0.14)), var(--glass-bg);
+            border-color: var(--accent-blue);
+            box-shadow: 0 15px 40px rgba(var(--accent-rgb), 0.24), inset 0 0 24px rgba(var(--accent-rgb), 0.1);
+        }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .card-title-group { display: flex; align-items: center; gap: 14px; }
+        .num-badge {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #06090f;
+            font-weight: 800;
+            font-family: monospace;
+            font-size: 1rem;
+            padding: 6px 12px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.4);
+        }
+        h2 { font-size: 1.35rem; color: #fff; }
+        .copy-btn {
+            background: rgba(var(--accent-rgb), 0.12);
+            border: 1px solid rgba(var(--accent-rgb), 0.35);
+            color: var(--accent-blue);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .copy-btn:hover { background: var(--accent-blue); color: #06090f; font-weight: 600; }
+        .box-myth {
+            background: rgba(251, 113, 133, 0.08);
+            border-left: 4px solid var(--danger);
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 16px;
+        }
+        .box-myth strong { color: var(--danger); }
+        .box-fact {
+            background: rgba(52, 211, 153, 0.08);
+            border-left: 4px solid var(--success);
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 18px;
+        }
+        .box-fact strong { color: var(--success); }
+        p { margin-bottom: 14px; color: #cbd5e1; }
+        code {
+            font-family: monospace;
+            background: rgba(var(--accent-rgb), 0.15);
+            color: var(--accent-blue);
+            padding: 2px 7px;
+            border-radius: 5px;
+            border: 1px solid rgba(var(--accent-rgb), 0.25);
+        }
+        .links-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        .proof-link {
+            text-decoration: none;
+            background: rgba(15, 23, 42, 0.8);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .proof-link:hover {
+            border-color: var(--accent-blue);
+            background: rgba(var(--accent-rgb), 0.18);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(var(--accent-rgb), 0.25);
+        }
+        #toast {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #06090f;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+        }
+        #toast.show { transform: translateY(0); opacity: 1; }
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 50px;
+            padding: 20px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 600px) { h1 { font-size: 1.65rem; } .card { padding: 20px; } }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="container">
+    <header>
+        <div class="status-pill">
+            <span class="pulse-dot"></span>
+            <span>SYSTEM ONLINE // AUDIT PORTAL</span>
+        </div>
+        <div class="controls-bar">
+            <select id="color-select" class="cyber-select" onchange="changeColorTheme(this.value)">
+                <option value="cyber-blue">🔵 Цвет 1: Кибер-синий</option>
+                <option value="emerald">🟢 Цвет 2: Изумруд (Hacker)</option>
+                <option value="cyberpunk">🩷 Цвет 3: Киберпанк (Неон)</option>
+                <option value="amber">🟠 Цвет 4: Янтарь (Золото)</option>
+                <option value="violet">🟣 Цвет 5: Ультрафиолет</option>
+                <option value="crimson">🔴 Цвет 6: Алый (Red Team)</option>
+                <option value="cyan">🩵 Цвет 7: Ледяной неон (Cyan)</option>
+                <option value="lime">🍏 Цвет 8: Кислотный лайм</option>
+                <option value="sunset">🌅 Цвет 9: Закат (Коралл)</option>
+                <option value="ocean">🌊 Цвет 10: Глубокий океан</option>
+                <option value="magenta">🔮 Цвет 11: Фуксия (Synthwave)</option>
+                <option value="monochrome">⚪ Цвет 12: Графит (Сталь)</option>
+            </select>
+            <select id="bg-select" class="cyber-select" onchange="changeBgMode(this.value)">
+                <option value="mesh">✨ Анимация 1: Нейросеть</option>
+                <option value="matrix">✨ Анимация 2: Матрица</option>
+                <option value="stars">✨ Анимация 3: Космос</option>
+                <option value="grid">✨ Анимация 4: Кибер-сетка</option>
+                <option value="waves">✨ Анимация 5: Волны</option>
+                <option value="embers">✨ Анимация 6: Неон-искры</option>
+                <option value="binary">✨ Анимация 7: Двоичный код</option>
+                <option value="hex">✨ Анимация 8: Гексагоны</option>
+                <option value="aurora">✨ Анимация 9: Сияние</option>
+                <option value="stealth">✨ Анимация 10: Тихий (Без анимации)</option>
+            </select>
+        </div>
+
+        <h1><span id="typewriter"></span><span class="cursor">&nbsp;</span></h1>
+        <p class="subtitle">Персональный веб-портал для сдачи домашних заданий и верификации технической терминологии по стандартам ГОСТ, NIST, Microsoft Learn и MITRE CVE.</p>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('audit', this)">🛡️ Текущее ДЗ: Аудит ПО и ИБ</button>
+            <button class="tab-btn" onclick="switchTab('future', this)">📂 Архив / Будущие ДЗ</button>
+        </div>
+    </header>
+
+    <div id="audit" class="tab-content active">
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">01</span>
+                    <h2>Миф о «вирусах-зомби» в классификации</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('По ГОСТ Р 51275-2006 и стандартам NIST понятия «вирус-зомби» не существует. Зомби — это статус зараженного ПК в ботнете, а программа называется Бот или Троян (Backdoor).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Ошибка в задании:</strong> Утверждение, что «вирусы-зомби» — это отдельный вид компьютерных вирусов.
+            </div>
+            <div class="box-fact">
+                <strong>Научный факт:</strong> В стандартах кибербезопасности термина «вирус-зомби» нет. <strong>Зомби (Zombie)</strong> — это статус компьютера в составе <strong>ботнета</strong>. Вредоносная программа классифицируется как <strong>Бот</strong> или <strong>Троян удалённого доступа (Backdoor)</strong>, так как она не внедряется в другие файлы.
+            </div>
+            <p>Смешивание всех видов Malware под словом «вирус» — бытовой штамп из 1990-х годов, противоречащий государственным стандартам РФ (ГОСТ) и международной базе NIST.</p>
+            <div class="links-row">
+                <a href="https://encyclopedia.kaspersky.ru/glossary/botnet/" target="_blank" class="proof-link">📄 Энциклопедия Касперского (Ботнет и Зомби)</a>
+                <a href="https://csrc.nist.gov/glossary/term/botnet" target="_blank" class="proof-link">🏛️ Стандарты NIST (США): Zombie</a>
+                <a href="https://docs.cntd.ru/document/1200057516" target="_blank" class="proof-link">🇷🇺 ГОСТ Р 51275-2006</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">02</span>
+                    <h2>Ядро Linux против версий Windows (10 / 11)</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Linux — это ядро (kernel.org), у него нет единых пользовательских версий, есть дистрибутивы GNU/Linux. А у Windows 10 и 11 технически одно ядро NT 10.0 (документация Microsoft Learn).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Ошибочный аргумент:</strong> Linux — это программа/ОС с едиными версиями (по аналогии с Windows 1.0, 8.1, 10, 11).
+            </div>
+            <div class="box-fact">
+                <strong>Архитектурный факт:</strong> <strong>Linux</strong> — это исключительно <strong>ядро (Kernel)</strong>. Полноценные системы на его базе называются <strong>дистрибутивами GNU/Linux</strong> (Ubuntu, Debian, Astra Linux), у каждого из которых своя независимая нумерация.
+            </div>
+            <p>Ранние версии Windows (1.0 – 3.1) были графическими оболочками поверх <strong>MS-DOS</strong>. Современная линейка работает на ядре <strong>Windows NT</strong>. Согласно официальной таблице <strong>Microsoft Learn</strong>, Windows 10 и Windows 11 имеют <strong>одинаковый технический номер версии ядра — <code>10.0</code></strong>. Цифры 10 и 11 — чистый маркетинг (проверяется командой <code>ver</code> в консоли).</p>
+            <div class="links-row">
+                <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/operating-system-version" target="_blank" class="proof-link">🪟 Microsoft Learn: Win 10 = Win 11 (Kernel 10.0)</a>
+                <a href="https://www.kernel.org/" target="_blank" class="proof-link">🐧 Kernel.org: Архив ядра Linux</a>
+                <a href="https://www.gnu.org/gnu/linux-and-gnu.html" target="_blank" class="proof-link">⚙️ GNU: Ядро Linux vs ОС GNU/Linux</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">03</span>
+                    <h2>Сторонние антивирусы: нагрузка и уязвимости</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Исследователи Google Project Zero доказали, что сторонние антивирусы сами содержат критические уязвимости в режиме ядра (Ring 0) и ломают защиту браузеров.')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Устаревшее правило:</strong> Обязательная установка стороннего антивируса (Kaspersky, ESET NOD32) для защиты ПК.
+            </div>
+            <div class="box-fact">
+                <strong>Позиция исследователей ИБ:</strong> Сторонние антивирусы не только перегружают ЦП и ОЗУ, но и <strong>сами открывают дыры для взлома</strong>, работая с высшими привилегиями ядра (Ring 0) и вмешиваясь в шифрование HTTPS.
+            </div>
+            <p>Элитная команда <strong>Google Project Zero</strong> опубликовала десятки отчётов о критических уязвимостях в антивирусах (включая Kaspersky и ESET). Инженеры Mozilla также официально призывали удалять сторонний защитный софт, так как он отключает встроенные песочницы браузеров. Главная защита — цифровая гигиена.</p>
+            <div class="links-row">
+                <a href="https://googleprojectzero.blogspot.com/" target="_blank" class="proof-link">🛡️ Google Project Zero: Уязвимости антивирусов</a>
+                <a href="https://robert.ocallahan.org/2017/01/disable-your-antivirus-software-except.html" target="_blank" class="proof-link">🦊 Экс-инженер Mozilla: Вред антивирусного ПО</a>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">04</span>
+                    <h2>Яндекс.Браузер: Bloatware, уязвимости CVE и слежка</h2>
+                </div>
+                <button class="copy-btn" onclick="copyText('Яндекс.Браузер — перегруженное ПО (Bloatware) с закрытым кодом, регулярными уязвимостями в базе CVE и обязательной передачей метаданных по реестру ОРИ (ФЗ-374).')">📋 Копировать тезис</button>
+            </div>
+            <div class="box-myth">
+                <strong>Тезис из учебника:</strong> Яндекс.Браузер — простая и безопасная программа для просмотра веб-страниц.
+            </div>
+            <div class="box-fact">
+                <strong>Технический и юридический факт:</strong> Проприетарное ПО категории <strong>Bloatware</strong> с закрытым исходным кодом, высоким потреблением ОЗУ, встроенными трекерами и регулярными уязвимостями для третьих лиц. Эталон приватности — Open Source (<code>Ungoogled Chromium</code>, <code>LibreWolf</code>).
+            </div>
+            <p>В международной базе <strong>MITRE CVE</strong> и бюллетенях самого Яндекса регулярно фиксируются уязвимости браузера, позволяющие злоумышленникам красть сессионные куки и данные. Кроме того, компания состоит в <strong>Реестре ОРИ Роскомнадзора</strong> (ФЗ-374), что обязывает её хранить и передавать метаданные пользователей.</p>
+            <div class="links-row">
+                <a href="https://yandex.ru/security/advisories" target="_blank" class="proof-link">🐞 Бюллетени уязвимостей Яндекса</a>
+                <a href="https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=Yandex+Browser" target="_blank" class="proof-link">🔓 База уязвимостей CVE: Yandex Browser</a>
+                <a href="https://97-fz.rkn.gov.ru/" target="_blank" class="proof-link">⚖️ Реестр ОРИ Роскомнадзора</a>
+                <a href="https://github.com/ungoogled-software/ungoogled-chromium" target="_blank" class="proof-link">💻 Open Source эталон: Ungoogled Chromium</a>
+            </div>
+        </article>
+    </div>
+
+    <div id="future" class="tab-content">
+        <article class="card visible">
+            <div class="card-top">
+                <div class="card-title-group">
+                    <span class="num-badge">HW</span>
+                    <h2>Раздел для дистанционной сдачи домашних заданий</h2>
+                </div>
+            </div>
+            <div class="box-fact">
+                <strong>Статус раздела:</strong> Готов к публикации новых работ.
+            </div>
+            <p>Этот портал используется для удалённой демонстрации выполненных практических работ, презентаций, кода и рефератов по информатике в случае отсутствия на уроке. Все последующие практические работы, лабораторные и разборы тем будут добавляться в этот раздел в хронологическом порядке.</p>
+        </article>
+    </div>
+
+    <footer>
+        Веб-портал разработан на чистом HTML5 / CSS3 / Vanilla JS без сторонних фреймворков и трекеров.
+    </footer>
+</div>
+
+<div id="toast">✅ Тезис скопирован в буфер обмена!</div>
+
+<script>
+    const colorThemes = {
+        'cyber-blue': {
+            bgDark: '#06090f', bgRadial: '#0f172a', glassBg: 'rgba(16, 22, 34, 0.75)',
+            accent1: '#38bdf8', accent2: '#818cf8', rgb1: '56, 189, 248', rgb2: '129, 140, 248',
+            fadeBg: 'rgba(6, 9, 15, 0.08)', fadeStars: 'rgba(6, 9, 15, 0.35)'
+        },
+        'emerald': {
+            bgDark: '#040d09', bgRadial: '#0a261a', glassBg: 'rgba(10, 26, 19, 0.75)',
+            accent1: '#10b981', accent2: '#34d399', rgb1: '16, 185, 129', rgb2: '52, 211, 153',
+            fadeBg: 'rgba(4, 13, 9, 0.08)', fadeStars: 'rgba(4, 13, 9, 0.35)'
+        },
+        'cyberpunk': {
+            bgDark: '#0d0614', bgRadial: '#260b36', glassBg: 'rgba(26, 12, 36, 0.75)',
+            accent1: '#f43f5e', accent2: '#d946ef', rgb1: '244, 63, 94', rgb2: '217, 70, 239',
+            fadeBg: 'rgba(13, 6, 20, 0.08)', fadeStars: 'rgba(13, 6, 20, 0.35)'
+        },
+        'amber': {
+            bgDark: '#0f0a04', bgRadial: '#261909', glassBg: 'rgba(28, 20, 10, 0.75)',
+            accent1: '#f59e0b', accent2: '#fb923c', rgb1: '245, 158, 11', rgb2: '251, 146, 60',
+            fadeBg: 'rgba(15, 10, 4, 0.08)', fadeStars: 'rgba(15, 10, 4, 0.35)'
+        },
+        'violet': {
+            bgDark: '#090614', bgRadial: '#1b1138', glassBg: 'rgba(20, 14, 41, 0.75)',
+            accent1: '#a855f7', accent2: '#6366f1', rgb1: '168, 85, 247', rgb2: '99, 102, 241',
+            fadeBg: 'rgba(9, 6, 20, 0.08)', fadeStars: 'rgba(9, 6, 20, 0.35)'
+        },
+        'crimson': {
+            bgDark: '#120507', bgRadial: '#2b0a10', glassBg: 'rgba(31, 10, 14, 0.76)',
+            accent1: '#ef4444', accent2: '#f97316', rgb1: '239, 68, 68', rgb2: '249, 115, 22',
+            fadeBg: 'rgba(18, 5, 7, 0.08)', fadeStars: 'rgba(18, 5, 7, 0.35)'
+        },
+        'cyan': {
+            bgDark: '#040e12', bgRadial: '#082733', glassBg: 'rgba(9, 27, 36, 0.75)',
+            accent1: '#06b6d4', accent2: '#22d3ee', rgb1: '6, 182, 212', rgb2: '34, 211, 238',
+            fadeBg: 'rgba(4, 14, 18, 0.08)', fadeStars: 'rgba(4, 14, 18, 0.35)'
+        },
+        'lime': {
+            bgDark: '#070f04', bgRadial: '#15290a', glassBg: 'rgba(16, 31, 10, 0.75)',
+            accent1: '#84cc16', accent2: '#a3e635', rgb1: '132, 204, 22', rgb2: '163, 230, 53',
+            fadeBg: 'rgba(7, 15, 4, 0.08)', fadeStars: 'rgba(7, 15, 4, 0.35)'
+        },
+        'sunset': {
+            bgDark: '#120709', bgRadial: '#2e1118', glassBg: 'rgba(33, 14, 19, 0.75)',
+            accent1: '#fb7185', accent2: '#fbbf24', rgb1: '251, 113, 133', rgb2: '251, 191, 36',
+            fadeBg: 'rgba(18, 7, 9, 0.08)', fadeStars: 'rgba(18, 7, 9, 0.35)'
+        },
+        'ocean': {
+            bgDark: '#030812', bgRadial: '#091936', glassBg: 'rgba(10, 21, 43, 0.76)',
+            accent1: '#3b82f6', accent2: '#14b8a6', rgb1: '59, 130, 246', rgb2: '20, 184, 166',
+            fadeBg: 'rgba(3, 8, 18, 0.08)', fadeStars: 'rgba(3, 8, 18, 0.35)'
+        },
+        'magenta': {
+            bgDark: '#110412', bgRadial: '#2b092e', glassBg: 'rgba(31, 10, 33, 0.76)',
+            accent1: '#ec4899', accent2: '#8b5cf6', rgb1: '236, 72, 153', rgb2: '139, 92, 246',
+            fadeBg: 'rgba(17, 4, 18, 0.08)', fadeStars: 'rgba(17, 4, 18, 0.35)'
+        },
+        'monochrome': {
+            bgDark: '#090a0c', bgRadial: '#181a1f', glassBg: 'rgba(22, 24, 29, 0.78)',
+            accent1: '#e2e8f0', accent2: '#94a3b8', rgb1: '226, 232, 240', rgb2: '148, 163, 184',
+            fadeBg: 'rgba(9, 10, 12, 0.08)', fadeStars: 'rgba(9, 10, 12, 0.35)'
+        }
+    };
+
+    let currentThemeKey = localStorage.getItem('portal_color_theme') || 'cyber-blue';
+    if (!colorThemes[currentThemeKey]) currentThemeKey = 'cyber-blue';
+    let activeTheme = colorThemes[currentThemeKey];
+    document.getElementById('color-select').value = currentThemeKey;
+
+    function applyColorTheme(key) {
+        activeTheme = colorThemes[key] || colorThemes['cyber-blue'];
+        const root = document.documentElement.style;
+        root.setProperty('--bg-dark', activeTheme.bgDark);
+        root.setProperty('--bg-radial', activeTheme.bgRadial);
+        root.setProperty('--glass-bg', activeTheme.glassBg);
+        root.setProperty('--accent-blue', activeTheme.accent1);
+        root.setProperty('--accent-purple', activeTheme.accent2);
+        root.setProperty('--accent-rgb', activeTheme.rgb1);
+        root.setProperty('--accent2-rgb', activeTheme.rgb2);
+    }
+
+    function changeColorTheme(key) {
+        currentThemeKey = key;
+        localStorage.setItem('portal_color_theme', key);
+        applyColorTheme(key);
+    }
+    applyColorTheme(currentThemeKey);
+
+    const titleText = "Технический аудит ПО и кибербезопасности";
+    const typewriterEl = document.getElementById("typewriter");
+    let charIndex = 0;
+
+    function typeEffect() {
+        if (charIndex < titleText.length) {
+            typewriterEl.textContent += titleText.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeEffect, 45);
+        }
+    }
+    window.addEventListener("load", typeEffect);
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+        revealCards();
+    }
+
+    function revealCards() {
+        const cards = document.querySelectorAll('.tab-content.active .card');
+        cards.forEach((card, index) => {
+            setTimeout(() => { card.classList.add('visible'); }, index * 150);
+        });
+    }
+    window.addEventListener("load", revealCards);
+
+    function copyText(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById("toast");
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 2500);
+        });
+    }
+
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, animId;
+    let currentMode = localStorage.getItem('portal_bg_mode') || 'mesh';
+    document.getElementById('bg-select').value = currentMode;
+    let state = {};
+
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        setupMode(currentMode);
+    }
+    window.addEventListener('resize', resize);
+
+    function changeBgMode(mode) {
+        currentMode = mode;
+        localStorage.setItem('portal_bg_mode', mode);
+        setupMode(mode);
+    }
+
+    function setupMode(mode) {
+        if (animId) {
+            cancelAnimationFrame(animId);
+            animId = null;
+        }
+        ctx.clearRect(0, 0, width, height);
+        state = { time: 0 };
+
+        if (mode === 'mesh') {
+            const count = Math.min(Math.floor(width / 18), 75);
+            state.items = Array.from({ length: count }, () => ({
+                x: Math.random() * width, y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.7, vy: (Math.random() - 0.5) * 0.7, r: Math.random() * 2 + 1
+            }));
+        } else if (mode === 'matrix') {
+            state.drops = Array(Math.floor(width / 18)).fill(1);
+            state.chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+        } else if (mode === 'stars') {
+            state.stars = Array.from({ length: 180 }, () => ({
+                x: (Math.random() - 0.5) * width, y: (Math.random() - 0.5) * height, z: Math.random() * width
+            }));
+        } else if (mode === 'embers') {
+            state.embers = Array.from({ length: 70 }, () => ({
+                x: Math.random() * width, y: Math.random() * height,
+                vy: -(Math.random() * 1.2 + 0.4), vx: (Math.random() - 0.5) * 0.5, r: Math.random() * 2.5 + 1
+            }));
+        } else if (mode === 'binary') {
+            state.streams = Array.from({ length: Math.floor(height / 24) }, (_, i) => ({
+                y: i * 24 + 18, x: Math.random() * width,
+                speed: (Math.random() * 1.5 + 0.5) * (i % 2 === 0 ? 1 : -1),
+                text: Array.from({ length: 40 }, () => Math.round(Math.random())).join(' ')
+            }));
+        }
+        if (mode !== 'stealth') loop();
+    }
+
+    function loop() {
+        if (currentMode === 'stealth') return;
+        state.time += 0.02;
+        if (currentMode === 'mesh') {
+            ctx.clearRect(0, 0, width, height); ctx.fillStyle = activeTheme.accent1;
+            state.items.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+                for (let j = i + 1; j < state.items.length; j++) {
+                    const p2 = state.items[j], dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 130) {
+                        ctx.strokeStyle = `rgba(${activeTheme.rgb1}, ${0.22 * (1 - dist / 130)})`;
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                    }
+                }
+            });
+        } else if (currentMode === 'matrix') {
+            ctx.fillStyle = activeTheme.fadeBg; ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = activeTheme.accent1; ctx.font = '15px monospace';
+            state.drops.forEach((y, i) => {
+                ctx.fillText(state.chars[Math.floor(Math.random() * state.chars.length)], i * 18, y * 18);
+                if (y * 18 > height && Math.random() > 0.975) state.drops[i] = 0;
+                state.drops[i]++;
+            });
+        } else if (currentMode === 'stars') {
+            ctx.fillStyle = activeTheme.fadeStars; ctx.fillRect(0, 0, width, height);
+            const cx = width / 2, cy = height / 2;
+            state.stars.forEach(s => {
+                s.z -= 4;
+                if (s.z <= 0) { s.z = width; s.x = (Math.random() - 0.5) * width; s.y = (Math.random() - 0.5) * height; }
+                const sx = (s.x / s.z) * width + cx, sy = (s.y / s.z) * height + cy, r = (1 - s.z / width) * 3;
+                ctx.fillStyle = activeTheme.accent1; ctx.beginPath(); ctx.arc(sx, sy, Math.max(0.5, r), 0, Math.PI * 2); ctx.fill();
+            });
+        } else if (currentMode === 'grid') {
+            ctx.clearRect(0, 0, width, height); ctx.strokeStyle = `rgba(${activeTheme.rgb2}, 0.2)`;
+            const step = 45, offset = (state.time * 25) % step;
+            for (let x = 0; x < width; x += step) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); }
+            for (let y = offset; y < height; y += step) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
+        } else if (currentMode === 'waves') {
+            ctx.clearRect(0, 0, width, height);
+            for (let w = 0; w < 4; w++) {
+                ctx.beginPath(); ctx.strokeStyle = w % 2 === 0 ? `rgba(${activeTheme.rgb1}, 0.25)` : `rgba(${activeTheme.rgb2}, 0.25)`; ctx.lineWidth = 2;
+                for (let x = 0; x < width; x += 10) {
+                    const y = height / 2 + Math.sin(x * 0.005 + state.time + w) * (60 + w * 25);
+                    if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+        } else if (currentMode === 'embers') {
+            ctx.clearRect(0, 0, width, height);
+            state.embers.forEach(e => {
+                e.y += e.vy; e.x += e.vx;
+                if (e.y < 0) { e.y = height; e.x = Math.random() * width; }
+                ctx.fillStyle = `rgba(${activeTheme.rgb1}, ${0.4 + Math.sin(state.time * 3 + e.x) * 0.3})`;
+                ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2); ctx.fill();
+            });
+        } else if (currentMode === 'binary') {
+            ctx.clearRect(0, 0, width, height); ctx.fillStyle = `rgba(${activeTheme.rgb1}, 0.16)`; ctx.font = '14px monospace';
+            state.streams.forEach(st => {
+                st.x += st.speed; if (st.x > width) st.x = -400; if (st.x < -400) st.x = width;
+                ctx.fillText(st.text, st.x, st.y);
+            });
+        } else if (currentMode === 'hex') {
+            ctx.clearRect(0, 0, width, height);
+            const r = 35, dx = r * 1.5, dy = r * Math.sqrt(3);
+            for (let x = 0; x < width + dx; x += dx) {
+                for (let y = 0; y < height + dy; y += dy) {
+                    const cy = y + (Math.round(x / dx) % 2 === 0 ? 0 : dy / 2);
+                    const pulse = Math.sin(x * 0.01 + y * 0.01 + state.time * 2);
+                    ctx.strokeStyle = `rgba(${activeTheme.rgb1}, ${0.06 + Math.max(0, pulse) * 0.15})`;
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        const a = (Math.PI / 3) * i, px = x + r * Math.cos(a), py = cy + r * Math.sin(a);
+                        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath(); ctx.stroke();
+                }
+            }
+        } else if (currentMode === 'aurora') {
+            ctx.clearRect(0, 0, width, height);
+            const g1 = ctx.createRadialGradient(width * 0.3 + Math.sin(state.time) * 150, height * 0.3, 10, width * 0.3, height * 0.3, 450);
+            g1.addColorStop(0, `rgba(${activeTheme.rgb1}, 0.2)`); g1.addColorStop(1, 'transparent');
+            const g2 = ctx.createRadialGradient(width * 0.7 + Math.cos(state.time * 0.8) * 150, height * 0.6, 10, width * 0.7, height * 0.6, 450);
+            g2.addColorStop(0, `rgba(${activeTheme.rgb2}, 0.2)`); g2.addColorStop(1, 'transparent');
+            ctx.fillStyle = g1; ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = g2; ctx.fillRect(0, 0, width, height);
+        }
+        animId = requestAnimationFrame(loop);
+    }
+
+    resize();
+</script>
+
+</body>
+</html>
+
+```
