@@ -134,44 +134,73 @@ header, .card {
 .brand-name { font-weight: 900; font-size: 1.05rem; letter-spacing: 0.06em; color: #fff; }
 .brand-name span { color: var(--accent); }
 .brand-sub { font-size: 0.68rem; font-family: monospace; color: var(--muted); letter-spacing: 0.12em; }
-.settings-trigger { position: fixed; top: 18px; right: 18px; z-index: 1000; background: rgba(16,22,34,0.72); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid rgba(255,255,255,0.22); box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 8px 25px rgba(0,0,0,0.5); color: #fff; padding: 9px 16px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.25s; }
+.settings-trigger {
+    position: fixed; top: 18px; right: 18px; z-index: 1000;
+    background: rgba(16, 22, 34, 0.78);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 25px rgba(0,0,0,0.5);
+    color: #fff; padding: 9px 16px; border-radius: 50px;
+    font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.25s;
+}
 .settings-trigger:hover { border-color: var(--accent); transform: scale(1.04); }
-.settings-panel { display: none; position: fixed; top: 66px; right: 18px; width: 320px; max-height: 82vh; overflow-y: auto; z-index: 1000; background: rgba(14,19,30,0.86); backdrop-filter: blur(24px) saturate(200%); -webkit-backdrop-filter: blur(24px) saturate(200%); border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 24px 60px rgba(0,0,0,0.75); border-radius: 20px; padding: 18px; text-align: left; }
+.settings-panel {
+    display: none; position: fixed; top: 66px; right: 18px; width: 320px; max-height: 82vh; overflow-y: auto; z-index: 1000;
+    background: rgba(10, 15, 26, 0.95) !important;
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 24px 60px rgba(0,0,0,0.75);
+    border-radius: 20px; padding: 18px; text-align: left; color: #f8fafc !important;
+}
 .settings-panel.open { display: block; animation: fadeIn 0.25s ease; }
 .set-tabs { display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 10px; margin-bottom: 14px; }
-.set-tab { background: rgba(56,189,248,0.15); border: 1px solid var(--accent); color: #fff; padding: 5px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 600; }
+.set-tab { background: rgba(56, 189, 248, 0.18); border: 1px solid var(--accent); color: #fff; padding: 5px 12px; border-radius: 10px; font-size: 0.82rem; font-weight: 600; }
 .set-sec-title { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin: 14px 0 8px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 700; }
 .set-group { margin-bottom: 12px; }
-.set-group label { display: flex; justify-content: space-between; font-size: 0.84rem; color: var(--text); margin-bottom: 5px; font-weight: 600; }
-.set-group select { width: 100%; border-radius: 10px; }
+.set-group label { display: flex; justify-content: space-between; font-size: 0.84rem; color: #f1f5f9 !important; margin-bottom: 5px; font-weight: 600; }
+.set-group select { width: 100%; border-radius: 10px; background: #1e293b !important; color: #ffffff !important; border: 1px solid var(--accent) !important; }
 .set-group input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-.set-toggle { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.06); padding: 8px 12px; border-radius: 10px; font-size: 0.84rem; cursor: pointer; }
+.set-toggle { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.08) !important; color: #f1f5f9 !important; padding: 8px 12px; border-radius: 10px; font-size: 0.84rem; cursor: pointer; }
 .reset-bar { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12); }
-.reset-btn { width: 100%; background: rgba(251,113,133,0.12); border: 1px solid rgba(251,113,133,0.35); color: var(--danger); padding: 8px; border-radius: 10px; font-weight: 600; font-size: 0.84rem; cursor: pointer; transition: 0.2s; }
+.reset-btn { width: 100%; background: rgba(251, 113, 133, 0.14); border: 1px solid rgba(251, 113, 133, 0.4); color: var(--danger); padding: 8px; border-radius: 10px; font-weight: 600; font-size: 0.84rem; cursor: pointer; transition: 0.2s; }
 .reset-btn:hover { background: var(--danger); color: #06090f; }
 
-    /* Фикс читаемости текста на прозрачном фоне */
-.box-myth, .box-fact { background: rgba(10, 15, 26, 0.78) !important; color: #f8fafc !important; }
-.tab-btn { color: #cbd5e1 !important; background: rgba(15, 23, 42, 0.75) !important; }
-.tab-btn.active { color: #ffffff !important; background: rgba(56, 189, 248, 0.25) !important; }
-.settings-panel { background: rgba(10, 15, 26, 0.94) !important; color: #f8fafc !important; }
-.set-group label { color: #f1f5f9 !important; }
-.set-group select { background: #1e293b !important; color: #ffffff !important; border: 1px solid var(--accent) !important; }
-.set-toggle { color: #f1f5f9 !important; background: rgba(255, 255, 255, 0.08) !important; }
+.box-myth, .box-fact { background: rgba(10, 15, 26, 0.82) !important; color: #f8fafc !important; }
+.tab-btn { color: #cbd5e1 !important; background: rgba(15, 23, 42, 0.78) !important; }
+.tab-btn.active { color: #ffffff !important; background: rgba(56, 189, 248, 0.28) !important; }
 
-/* Эффект iOS 26 Liquid Glass (включается галочкой) */
+:root { --glass-alpha: 0.22; --spec: 0.65; }
 body.liquid-glass header, body.liquid-glass .card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(255, 255, 255, 0.09) 100%) !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.42) !important;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.12) 100%), rgba(10, 15, 26, var(--glass-alpha)) !important;
+    backdrop-filter: url(#liquid-refract) blur(var(--blur)) saturate(210%) contrast(108%) !important;
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(210%) contrast(108%) !important;
+    border: 1.5px solid rgba(255, 255, 255, var(--spec)) !important;
     box-shadow:
-        inset 0 1px 1px rgba(255, 255, 255, 0.65),
-        inset 0 -1px 2px rgba(255, 255, 255, 0.2),
-        inset 0 0 24px rgba(255, 255, 255, 0.08),
-        0 20px 45px rgba(0, 0, 0, 0.5) !important;
+        inset 0 1.5px 2px rgba(255, 255, 255, 0.9),
+        inset 0 -2px 4px rgba(120, 200, 255, 0.4),
+        inset 3px 0 10px rgba(255, 110, 190, 0.22),
+        inset -3px 0 10px rgba(56, 220, 255, 0.25),
+        0 24px 50px rgba(0, 0, 0, 0.55) !important;
 }
+body.liquid-glass header::before, body.liquid-glass .card::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(56,220,255,0.55) 28%, rgba(255,255,255,0.05) 50%, rgba(244,114,182,0.55) 75%, rgba(160,235,255,0.85) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+}
+
 </style>
 </head>
-<body>
+<body> <svg width="0" height="0" style="position:fixed;pointer-events:none;" aria-hidden="true">
+    <filter id="liquid-refract" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="noise"/>
+        <feGaussianBlur in="noise" stdDeviation="5" result="smoothNoise"/>
+        <feDisplacementMap id="refract-map" in="SourceGraphic" in2="smoothNoise" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+</svg>
+
     <button class="settings-trigger" onclick="toggleSettings()">⚙️ Настройки</button>
 <div class="settings-panel" id="settings-panel">
     <div class="set-tabs"><span class="set-tab">🎨 Кастомизация</span></div>
@@ -188,6 +217,28 @@ body.liquid-glass header, body.liquid-glass .card {
             <option value="mesh">✨ Нейросеть</option><option value="matrix">✨ Матрица</option><option value="stars">✨ Космос</option><option value="grid">✨ Кибер-сетка</option><option value="waves">✨ Волны</option><option value="embers">✨ Неон-искры</option><option value="binary">✨ Двоичный код</option><option value="hex">✨ Гексагоны</option><option value="aurora">✨ Сияние</option><option value="stealth">✨ Тихий (Без анимации)</option>
         </select>
     </div>
+    <div class="set-group">
+        <label class="set-toggle" style="margin-bottom:6px;"><span>💧 Liquid Glass (iOS 26)</span><input type="checkbox" id="liquid-check" checked onchange="updateAllSettings()"></label>
+        <label><span style="font-size:0.78rem;color:#94a3b8;">Сила преломления Liquid Glass</span><span id="liq-val">18px</span></label>
+        <input type="range" id="liq-range" min="0" max="45" value="18" oninput="updateAllSettings()">
+    </div>
+    <div class="set-group">
+        <label class="set-toggle" style="margin-bottom:6px;"><span>🌫️ Размытие фона (Blur)</span><input type="checkbox" id="blur-check" checked onchange="updateAllSettings()"></label>
+        <label><span style="font-size:0.78rem;color:#94a3b8;">Сила размытия</span><span id="blur-val">8px</span></label>
+        <input type="range" id="blur-range" min="1" max="40" value="8" oninput="updateAllSettings()">
+    </div>
+    <div class="set-group">
+        <label class="set-toggle" style="margin-bottom:6px;"><span>🌑 Затемнение стекла</span><input type="checkbox" id="glass-check" onchange="updateAllSettings()"></label>
+        <label><span style="font-size:0.78rem;color:#94a3b8;">Плотность затемнения</span><span id="glass-val">Выкл</span></label>
+        <input type="range" id="glass-range" min="15" max="95" value="55" oninput="updateAllSettings()">
+    </div>
+    <div class="set-group"><label><span>Размер шрифта</span><span id="font-val">100%</span></label><input type="range" id="font-range" min="85" max="125" value="100" oninput="updateAllSettings()"></div>
+    <div class="set-sec-title">⚡ Эффекты</div>
+    <div class="set-group"><label><span>Скругление углов</span><span id="rad-val">22px</span></label><input type="range" id="rad-range" min="0" max="32" value="22" oninput="updateAllSettings()"></div>
+    <div class="set-group" style="margin-bottom:0;"><label class="set-toggle"><span>3D-наклон карточек</span><input type="checkbox" id="tilt-check" checked onchange="updateAllSettings()"></label></div>
+    <div class="reset-bar"><button class="reset-btn" onclick="resetAllSettings()">🔄 Сбросить всё</button></div>
+</div>
+
 
     <div class="set-group">
         <label class="set-toggle">
@@ -631,37 +682,29 @@ function updateAllSettings() {
     const isLiquid = document.getElementById('liquid-check').checked;
     const isBlur = document.getElementById('blur-check').checked;
     const isGlass = document.getElementById('glass-check').checked;
-
-    const b = document.getElementById('blur-range').value;
-    const g = document.getElementById('glass-range').value;
-    const f = document.getElementById('font-range').value;
-    const r = document.getElementById('rad-range').value;
+    const lq = document.getElementById('liq-range').value, b = document.getElementById('blur-range').value, g = document.getElementById('glass-range').value, f = document.getElementById('font-range').value, r = document.getElementById('rad-range').value;
     tiltEnabled = document.getElementById('tilt-check').checked;
 
     document.body.classList.toggle('liquid-glass', isLiquid);
+    const rMap = document.getElementById('refract-map');
+    if (rMap) rMap.setAttribute('scale', isLiquid ? lq : '0');
 
+    document.getElementById('liq-val').textContent = isLiquid ? (lq + 'px') : 'Выкл';
     document.getElementById('blur-val').textContent = isBlur ? (b + 'px') : 'Выкл';
     document.getElementById('glass-val').textContent = isGlass ? (g + '%') : 'Выкл';
     document.getElementById('font-val').textContent = f + '%';
     document.getElementById('rad-val').textContent = r + 'px';
 
+    document.documentElement.style.setProperty('--spec', isLiquid ? Math.min(0.95, 0.35 + lq / 75).toFixed(2) : '0.16');
     document.documentElement.style.setProperty('--blur', isBlur ? (b + 'px') : '0px');
-    document.documentElement.style.setProperty('--glass-alpha', isGlass ? (g / 100).toFixed(2) : '0.45');
+    document.documentElement.style.setProperty('--glass-alpha', isGlass ? (g / 100).toFixed(2) : '0.18');
     document.documentElement.style.setProperty('--font-scale', f + '%');
     document.documentElement.style.setProperty('--radius', r + 'px');
 
-    localStorage.setItem('portal_liquid', isLiquid);
-    localStorage.setItem('portal_blur_on', isBlur);
-    localStorage.setItem('portal_glass_on', isGlass);
-    localStorage.setItem('portal_blur', b);
-    localStorage.setItem('portal_glass', g);
-    localStorage.setItem('portal_font', f);
-    localStorage.setItem('portal_rad', r);
-    localStorage.setItem('portal_tilt', tiltEnabled);
-
+    localStorage.setItem('portal_liquid', isLiquid); localStorage.setItem('portal_liq_val', lq); localStorage.setItem('portal_blur_on', isBlur); localStorage.setItem('portal_glass_on', isGlass);
+    localStorage.setItem('portal_blur', b); localStorage.setItem('portal_glass', g); localStorage.setItem('portal_font', f); localStorage.setItem('portal_rad', r); localStorage.setItem('portal_tilt', tiltEnabled);
     if (!tiltEnabled) document.querySelectorAll('.card').forEach(c => c.style.transform = '');
 }
-
 document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('mousemove', e => {
         if (!tiltEnabled) return;
@@ -669,26 +712,16 @@ document.querySelectorAll('.card').forEach(card => {
         card.style.transform = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateY(-4px)`;
     });
 });
-
 function resetAllSettings() {
-    ['portal_color_preset','portal_bg_mode','portal_liquid','portal_blur_on','portal_glass_on','portal_blur','portal_glass','portal_font','portal_rad','portal_tilt'].forEach(k => localStorage.removeItem(k));
-    document.getElementById('color-select').value = 'blue';
-    document.getElementById('bg-select').value = 'mesh';
-    document.getElementById('liquid-check').checked = true;
-    document.getElementById('blur-check').checked = true;
-    document.getElementById('glass-check').checked = false;
-    document.getElementById('blur-range').value = 14;
-    document.getElementById('glass-range').value = 55;
-    document.getElementById('font-range').value = 100;
-    document.getElementById('rad-range').value = 22;
-    document.getElementById('tilt-check').checked = true;
-    changeColorPreset('blue');
-    changeBgMode('mesh');
-    updateAllSettings();
+    ['portal_color_preset','portal_bg_mode','portal_liquid','portal_liq_val','portal_blur_on','portal_glass_on','portal_blur','portal_glass','portal_font','portal_rad','portal_tilt'].forEach(k => localStorage.removeItem(k));
+    document.getElementById('color-select').value = 'blue'; document.getElementById('bg-select').value = 'mesh';
+    document.getElementById('liquid-check').checked = true; document.getElementById('blur-check').checked = true; document.getElementById('glass-check').checked = false;
+    document.getElementById('liq-range').value = 18; document.getElementById('blur-range').value = 8; document.getElementById('glass-range').value = 55; document.getElementById('font-range').value = 100; document.getElementById('rad-range').value = 22; document.getElementById('tilt-check').checked = true;
+    changeColorPreset('blue'); changeBgMode('mesh'); updateAllSettings();
     if (typeof playFx === 'function') playFx('copy');
 }
-
 if (localStorage.getItem('portal_liquid') !== null) document.getElementById('liquid-check').checked = localStorage.getItem('portal_liquid') === 'true';
+if (localStorage.getItem('portal_liq_val')) document.getElementById('liq-range').value = localStorage.getItem('portal_liq_val');
 if (localStorage.getItem('portal_blur_on') !== null) document.getElementById('blur-check').checked = localStorage.getItem('portal_blur_on') === 'true';
 if (localStorage.getItem('portal_glass_on') !== null) document.getElementById('glass-check').checked = localStorage.getItem('portal_glass_on') === 'true';
 if (localStorage.getItem('portal_blur')) document.getElementById('blur-range').value = localStorage.getItem('portal_blur');
