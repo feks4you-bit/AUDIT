@@ -149,13 +149,33 @@ header, .card {
 .reset-bar { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12); }
 .reset-btn { width: 100%; background: rgba(251,113,133,0.12); border: 1px solid rgba(251,113,133,0.35); color: var(--danger); padding: 8px; border-radius: 10px; font-weight: 600; font-size: 0.84rem; cursor: pointer; transition: 0.2s; }
 .reset-btn:hover { background: var(--danger); color: #06090f; }
+
+    /* Фикс читаемости текста на прозрачном фоне */
+.box-myth, .box-fact { background: rgba(10, 15, 26, 0.78) !important; color: #f8fafc !important; }
+.tab-btn { color: #cbd5e1 !important; background: rgba(15, 23, 42, 0.75) !important; }
+.tab-btn.active { color: #ffffff !important; background: rgba(56, 189, 248, 0.25) !important; }
+.settings-panel { background: rgba(10, 15, 26, 0.94) !important; color: #f8fafc !important; }
+.set-group label { color: #f1f5f9 !important; }
+.set-group select { background: #1e293b !important; color: #ffffff !important; border: 1px solid var(--accent) !important; }
+.set-toggle { color: #f1f5f9 !important; background: rgba(255, 255, 255, 0.08) !important; }
+
+/* Эффект iOS 26 Liquid Glass (включается галочкой) */
+body.liquid-glass header, body.liquid-glass .card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(255, 255, 255, 0.09) 100%) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.42) !important;
+    box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.65),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.2),
+        inset 0 0 24px rgba(255, 255, 255, 0.08),
+        0 20px 45px rgba(0, 0, 0, 0.5) !important;
+}
 </style>
 </head>
 <body>
     <button class="settings-trigger" onclick="toggleSettings()">⚙️ Настройки</button>
 <div class="settings-panel" id="settings-panel">
     <div class="set-tabs"><span class="set-tab">🎨 Кастомизация</span></div>
-    <div class="set-sec-title" style="margin-top:0;">Стиль и стекло</div>
+    <div class="set-sec-title" style="margin-top:0;">Стиль и Liquid Glass</div>
     <div class="set-group">
         <label><span>Цветовая тема</span></label>
         <select id="color-select" class="select-pill" onchange="changeColorPreset(this.value)">
@@ -168,12 +188,48 @@ header, .card {
             <option value="mesh">✨ Нейросеть</option><option value="matrix">✨ Матрица</option><option value="stars">✨ Космос</option><option value="grid">✨ Кибер-сетка</option><option value="waves">✨ Волны</option><option value="embers">✨ Неон-искры</option><option value="binary">✨ Двоичный код</option><option value="hex">✨ Гексагоны</option><option value="aurora">✨ Сияние</option><option value="stealth">✨ Тихий (Без анимации)</option>
         </select>
     </div>
-    <div class="set-group"><label><span>Размытие (iOS Blur)</span><span id="blur-val">18px</span></label><input type="range" id="blur-range" min="0" max="40" value="18" oninput="updateAllSettings()"></div>
-    <div class="set-group"><label><span>Плотность стекла</span><span id="glass-val">55%</span></label><input type="range" id="glass-range" min="15" max="95" value="55" oninput="updateAllSettings()"></div>
-    <div class="set-group"><label><span>Размер шрифта</span><span id="font-val">100%</span></label><input type="range" id="font-range" min="85" max="125" value="100" oninput="updateAllSettings()"></div>
+
+    <div class="set-group">
+        <label class="set-toggle">
+            <span>💧 Эффект Liquid Glass (iOS 26)</span>
+            <input type="checkbox" id="liquid-check" checked onchange="updateAllSettings()">
+        </label>
+    </div>
+
+    <div class="set-group">
+        <label class="set-toggle" style="margin-bottom:6px;">
+            <span>🌫️ Размытие фона (Blur)</span>
+            <input type="checkbox" id="blur-check" checked onchange="updateAllSettings()">
+        </label>
+        <label><span style="font-size:0.78rem;color:#94a3b8;">Сила размытия</span><span id="blur-val">14px</span></label>
+        <input type="range" id="blur-range" min="2" max="40" value="14" oninput="updateAllSettings()">
+    </div>
+
+    <div class="set-group">
+        <label class="set-toggle" style="margin-bottom:6px;">
+            <span>🪟 Плотность стекла</span>
+            <input type="checkbox" id="glass-check" onchange="updateAllSettings()">
+        </label>
+        <label><span style="font-size:0.78rem;color:#94a3b8;">Тонировка</span><span id="glass-val">55%</span></label>
+        <input type="range" id="glass-range" min="15" max="95" value="55" oninput="updateAllSettings()">
+    </div>
+
+    <div class="set-group">
+        <label><span>Размер шрифта</span><span id="font-val">100%</span></label>
+        <input type="range" id="font-range" min="85" max="125" value="100" oninput="updateAllSettings()">
+    </div>
+
     <div class="set-sec-title">⚡ Эффекты</div>
-    <div class="set-group"><label><span>Скругление углов</span><span id="rad-val">18px</span></label><input type="range" id="rad-range" min="0" max="32" value="18" oninput="updateAllSettings()"></div>
-    <div class="set-group" style="margin-bottom:0;"><label class="set-toggle"><span>3D-наклон карточек</span><input type="checkbox" id="tilt-check" checked onchange="updateAllSettings()"></label></div>
+    <div class="set-group">
+        <label><span>Скругление углов</span><span id="rad-val">22px</span></label>
+        <input type="range" id="rad-range" min="0" max="32" value="22" oninput="updateAllSettings()">
+    </div>
+    <div class="set-group" style="margin-bottom:0;">
+        <label class="set-toggle">
+            <span>3D-наклон карточек</span>
+            <input type="checkbox" id="tilt-check" checked onchange="updateAllSettings()">
+        </label>
+    </div>
     <div class="reset-bar"><button class="reset-btn" onclick="resetAllSettings()">🔄 Сбросить всё</button></div>
 </div>
 
@@ -572,13 +628,40 @@ function toggleSettings() {
 }
 let tiltEnabled = localStorage.getItem('portal_tilt') !== 'false';
 function updateAllSettings() {
-    const b = document.getElementById('blur-range').value, g = document.getElementById('glass-range').value, f = document.getElementById('font-range').value, r = document.getElementById('rad-range').value;
+    const isLiquid = document.getElementById('liquid-check').checked;
+    const isBlur = document.getElementById('blur-check').checked;
+    const isGlass = document.getElementById('glass-check').checked;
+
+    const b = document.getElementById('blur-range').value;
+    const g = document.getElementById('glass-range').value;
+    const f = document.getElementById('font-range').value;
+    const r = document.getElementById('rad-range').value;
     tiltEnabled = document.getElementById('tilt-check').checked;
-    document.getElementById('blur-val').textContent = b + 'px'; document.getElementById('glass-val').textContent = g + '%'; document.getElementById('font-val').textContent = f + '%'; document.getElementById('rad-val').textContent = r + 'px';
-    document.documentElement.style.setProperty('--blur', b + 'px'); document.documentElement.style.setProperty('--glass-alpha', (g / 100).toFixed(2)); document.documentElement.style.setProperty('--font-scale', f + '%'); document.documentElement.style.setProperty('--radius', r + 'px');
-    localStorage.setItem('portal_blur', b); localStorage.setItem('portal_glass', g); localStorage.setItem('portal_font', f); localStorage.setItem('portal_rad', r); localStorage.setItem('portal_tilt', tiltEnabled);
+
+    document.body.classList.toggle('liquid-glass', isLiquid);
+
+    document.getElementById('blur-val').textContent = isBlur ? (b + 'px') : 'Выкл';
+    document.getElementById('glass-val').textContent = isGlass ? (g + '%') : 'Выкл';
+    document.getElementById('font-val').textContent = f + '%';
+    document.getElementById('rad-val').textContent = r + 'px';
+
+    document.documentElement.style.setProperty('--blur', isBlur ? (b + 'px') : '0px');
+    document.documentElement.style.setProperty('--glass-alpha', isGlass ? (g / 100).toFixed(2) : '0.45');
+    document.documentElement.style.setProperty('--font-scale', f + '%');
+    document.documentElement.style.setProperty('--radius', r + 'px');
+
+    localStorage.setItem('portal_liquid', isLiquid);
+    localStorage.setItem('portal_blur_on', isBlur);
+    localStorage.setItem('portal_glass_on', isGlass);
+    localStorage.setItem('portal_blur', b);
+    localStorage.setItem('portal_glass', g);
+    localStorage.setItem('portal_font', f);
+    localStorage.setItem('portal_rad', r);
+    localStorage.setItem('portal_tilt', tiltEnabled);
+
     if (!tiltEnabled) document.querySelectorAll('.card').forEach(c => c.style.transform = '');
 }
+
 document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('mousemove', e => {
         if (!tiltEnabled) return;
@@ -586,18 +669,35 @@ document.querySelectorAll('.card').forEach(card => {
         card.style.transform = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateY(-4px)`;
     });
 });
+
 function resetAllSettings() {
-    ['portal_color_preset','portal_bg_mode','portal_blur','portal_glass','portal_font','portal_rad','portal_tilt'].forEach(k => localStorage.removeItem(k));
-    document.getElementById('color-select').value = 'blue'; document.getElementById('bg-select').value = 'mesh'; document.getElementById('blur-range').value = 18; document.getElementById('glass-range').value = 55; document.getElementById('font-range').value = 100; document.getElementById('rad-range').value = 18; document.getElementById('tilt-check').checked = true;
-    changeColorPreset('blue'); changeBgMode('mesh'); updateAllSettings();
+    ['portal_color_preset','portal_bg_mode','portal_liquid','portal_blur_on','portal_glass_on','portal_blur','portal_glass','portal_font','portal_rad','portal_tilt'].forEach(k => localStorage.removeItem(k));
+    document.getElementById('color-select').value = 'blue';
+    document.getElementById('bg-select').value = 'mesh';
+    document.getElementById('liquid-check').checked = true;
+    document.getElementById('blur-check').checked = true;
+    document.getElementById('glass-check').checked = false;
+    document.getElementById('blur-range').value = 14;
+    document.getElementById('glass-range').value = 55;
+    document.getElementById('font-range').value = 100;
+    document.getElementById('rad-range').value = 22;
+    document.getElementById('tilt-check').checked = true;
+    changeColorPreset('blue');
+    changeBgMode('mesh');
+    updateAllSettings();
     if (typeof playFx === 'function') playFx('copy');
 }
+
+if (localStorage.getItem('portal_liquid') !== null) document.getElementById('liquid-check').checked = localStorage.getItem('portal_liquid') === 'true';
+if (localStorage.getItem('portal_blur_on') !== null) document.getElementById('blur-check').checked = localStorage.getItem('portal_blur_on') === 'true';
+if (localStorage.getItem('portal_glass_on') !== null) document.getElementById('glass-check').checked = localStorage.getItem('portal_glass_on') === 'true';
 if (localStorage.getItem('portal_blur')) document.getElementById('blur-range').value = localStorage.getItem('portal_blur');
 if (localStorage.getItem('portal_glass')) document.getElementById('glass-range').value = localStorage.getItem('portal_glass');
 if (localStorage.getItem('portal_font')) document.getElementById('font-range').value = localStorage.getItem('portal_font');
 if (localStorage.getItem('portal_rad')) document.getElementById('rad-range').value = localStorage.getItem('portal_rad');
 document.getElementById('tilt-check').checked = tiltEnabled;
 updateAllSettings();
+
 </script>
 </body>
 </html>
