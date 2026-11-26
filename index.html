@@ -173,34 +173,46 @@ header, .card {
 
 :root { --glass-alpha: 0.22; --spec: 0.65; }
 body.liquid-glass header, body.liquid-glass .card {
-    background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.12) 100%), rgba(10, 15, 26, var(--glass-alpha)) !important;
-    backdrop-filter: url(#liquid-refract) blur(var(--blur)) saturate(210%) contrast(108%) !important;
-    -webkit-backdrop-filter: blur(var(--blur)) saturate(210%) contrast(108%) !important;
-    border: 1.5px solid rgba(255, 255, 255, var(--spec)) !important;
+    background:
+        radial-gradient(140% 90% at 50% 0%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.04) 48%, rgba(255, 255, 255, 0.14) 100%),
+        rgba(10, 15, 26, var(--glass-alpha)) !important;
+    backdrop-filter: blur(var(--blur)) saturate(200%) brightness(1.08) !important;
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(200%) brightness(1.08) !important;
+    border: 1px solid rgba(255, 255, 255, var(--spec)) !important;
     box-shadow:
-        inset 0 1.5px 2px rgba(255, 255, 255, 0.9),
-        inset 0 -2px 4px rgba(120, 200, 255, 0.4),
-        inset 3px 0 10px rgba(255, 110, 190, 0.22),
-        inset -3px 0 10px rgba(56, 220, 255, 0.25),
-        0 24px 50px rgba(0, 0, 0, 0.55) !important;
+        inset 0 2px 3px rgba(255, 255, 255, 0.85),
+        inset 0 -2px 5px rgba(140, 210, 255, 0.35),
+        inset 10px 0 20px rgba(255, 255, 255, 0.08),
+        inset -10px 0 20px rgba(56, 189, 248, 0.1),
+        0 20px 45px rgba(0, 0, 0, 0.5) !important;
 }
 body.liquid-glass header::before, body.liquid-glass .card::before {
     content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(56,220,255,0.55) 28%, rgba(255,255,255,0.05) 50%, rgba(244,114,182,0.55) 75%, rgba(160,235,255,0.85) 100%);
+    background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(125,211,252,0.5) 25%, rgba(255,255,255,0.04) 50%, rgba(244,114,182,0.45) 75%, rgba(255,255,255,0.85) 100%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
 }
 
+@media (max-width: 768px) {
+    .container { padding: 68px 14px 30px; }
+    header { padding: 24px 16px; margin-bottom: 24px; }
+    h1 { font-size: 1.55rem; min-height: 2.2rem; }
+    .subtitle { font-size: 0.94rem; }
+    .settings-trigger { top: 12px; right: 12px; padding: 8px 14px; font-size: 0.85rem; }
+    .settings-panel { top: 56px; left: 12px; right: 12px; width: auto; max-height: 76vh; padding: 16px; }
+    .nav-tabs { flex-direction: column; gap: 8px; }
+    .tab-btn { width: 100%; padding: 11px 16px; }
+    .card { padding: 20px 16px; margin-bottom: 18px; transform: none !important; }
+    .card-top { flex-direction: column; align-items: stretch; gap: 10px; }
+    .copy-btn { width: 100%; text-align: center; padding: 8px; }
+    .links-row { flex-direction: column; }
+    .proof-link { width: 100%; text-align: center; padding: 10px 12px; }
+    #toast { left: 14px; right: 14px; bottom: 16px; text-align: center; }
+}
+
 </style>
 </head>
-<body> <svg width="0" height="0" style="position:fixed;pointer-events:none;" aria-hidden="true">
-    <filter id="liquid-refract" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="3" result="noise"/>
-        <feGaussianBlur in="noise" stdDeviation="5" result="smoothNoise"/>
-        <feDisplacementMap id="refract-map" in="SourceGraphic" in2="smoothNoise" scale="18" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-</svg>
-
+<body> 
     <button class="settings-trigger" onclick="toggleSettings()">⚙️ Настройки</button>
 <div class="settings-panel" id="settings-panel">
     <div class="set-tabs"><span class="set-tab">🎨 Кастомизация</span></div>
@@ -582,15 +594,7 @@ function loop() {
     animId = requestAnimationFrame(loop);
 }
 resize();
-    document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        card.style.transform = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateY(-4px)`;
-    });
-    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-});
+  
 
 function filterCards(q) {
     q = q.toLowerCase();
@@ -686,18 +690,15 @@ function updateAllSettings() {
     tiltEnabled = document.getElementById('tilt-check').checked;
 
     document.body.classList.toggle('liquid-glass', isLiquid);
-    const rMap = document.getElementById('refract-map');
-    if (rMap) rMap.setAttribute('scale', isLiquid ? lq : '0');
-
-    document.getElementById('liq-val').textContent = isLiquid ? (lq + 'px') : 'Выкл';
+    document.getElementById('liq-val').textContent = isLiquid ? (lq + '%') : 'Выкл';
     document.getElementById('blur-val').textContent = isBlur ? (b + 'px') : 'Выкл';
     document.getElementById('glass-val').textContent = isGlass ? (g + '%') : 'Выкл';
     document.getElementById('font-val').textContent = f + '%';
     document.getElementById('rad-val').textContent = r + 'px';
 
-    document.documentElement.style.setProperty('--spec', isLiquid ? Math.min(0.95, 0.35 + lq / 75).toFixed(2) : '0.16');
+    document.documentElement.style.setProperty('--spec', isLiquid ? (lq / 100).toFixed(2) : '0.16');
     document.documentElement.style.setProperty('--blur', isBlur ? (b + 'px') : '0px');
-    document.documentElement.style.setProperty('--glass-alpha', isGlass ? (g / 100).toFixed(2) : '0.18');
+    document.documentElement.style.setProperty('--glass-alpha', isGlass ? (g / 100).toFixed(2) : '0.16');
     document.documentElement.style.setProperty('--font-scale', f + '%');
     document.documentElement.style.setProperty('--radius', r + 'px');
 
@@ -711,12 +712,13 @@ document.querySelectorAll('.card').forEach(card => {
         const rect = card.getBoundingClientRect(), x = (e.clientX - rect.left) / rect.width - 0.5, y = (e.clientY - rect.top) / rect.height - 0.5;
         card.style.transform = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateY(-4px)`;
     });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
 });
 function resetAllSettings() {
     ['portal_color_preset','portal_bg_mode','portal_liquid','portal_liq_val','portal_blur_on','portal_glass_on','portal_blur','portal_glass','portal_font','portal_rad','portal_tilt'].forEach(k => localStorage.removeItem(k));
     document.getElementById('color-select').value = 'blue'; document.getElementById('bg-select').value = 'mesh';
     document.getElementById('liquid-check').checked = true; document.getElementById('blur-check').checked = true; document.getElementById('glass-check').checked = false;
-    document.getElementById('liq-range').value = 18; document.getElementById('blur-range').value = 8; document.getElementById('glass-range').value = 55; document.getElementById('font-range').value = 100; document.getElementById('rad-range').value = 22; document.getElementById('tilt-check').checked = true;
+    document.getElementById('liq-range').value = 70; document.getElementById('blur-range').value = 10; document.getElementById('glass-range').value = 55; document.getElementById('font-range').value = 100; document.getElementById('rad-range').value = 22; document.getElementById('tilt-check').checked = true;
     changeColorPreset('blue'); changeBgMode('mesh'); updateAllSettings();
     if (typeof playFx === 'function') playFx('copy');
 }
